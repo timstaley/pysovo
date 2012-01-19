@@ -1,5 +1,5 @@
 import sys
-import voe as voevent
+import voevent
 
 #class dkeys:
 #    """Convenience class.

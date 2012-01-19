@@ -1,5 +1,5 @@
-import voe
-import voe_utils
+import voevent as voe
+import voevent_utils as voe_utils
 
 
 class Portfolio(object):

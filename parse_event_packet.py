@@ -1,6 +1,6 @@
 #from VOEventLib import Vutil as voe_utils
 
-from pysovo import voe, voe_utils
+from pysovo import voevent as voe, voevent_utils as voe_utils
 
 
 import pprint

@@ -4,9 +4,7 @@
 #
 # Generated Sun Jan 15 22:09:39 2012 by generateDS.py version 2.7b.
 #
-
 import sys
-import getopt
 import re as re_
 
 etree_ = None

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys, pprint
 import angles
-from pysovo import voe, voe_utils, email_alerts
+from pysovo import voevent as voe, voevent_utils as voe_utils, email_alerts
 
 
 email_account = email_alerts.load_account_settings_from_file()
