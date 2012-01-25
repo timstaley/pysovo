@@ -1,5 +1,6 @@
 import simplejson as json
 import os
+import sys
 import getpass
 import smtplib
 import _quick_keys as keys
@@ -51,9 +52,12 @@ def prompt_for_config( config_filename = default_email_config_file ):
     return config_filename
 
 def load_account_settings_from_file( config_filename = default_email_config_file):
-    config_file=open(config_filename, 'r')
-    account = json.loads(config_file.read())
-    config_file.close()
+    try:
+        with open(config_filename, 'r') as config_file:
+            account = json.loads(config_file.read())
+    except Exception as e:
+        print "Error: Could not load email account"
+        sys.exit()
     return account
 
 def send_email( account,
@@ -95,7 +99,8 @@ def format_ami_alert(array,
                     timing,
                     duration,
                     requester,
-                    comment):
+                    comment,
+                    action):
     
 #      Array=     AMI-SA
 #  Target=    GRB110328A
@@ -126,6 +131,7 @@ def format_ami_alert(array,
                 "Duration=  ", duration, "\n",
                 "Requester= ", requester, "\n",
                 "Comment=  ", comment, "\n"
+                "Action=  ", action, "\n"
                 ])
     return alert_text
 
