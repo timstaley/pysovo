@@ -1,6 +1,5 @@
-import voevent as voe
-import voevent_utils as voe_utils
-
+from VOEventLib import VOEvent as voe, Vutil as voe_utils
+import utils
 
 class Portfolio(object):
     def __init__(self, 
@@ -25,7 +24,7 @@ class Portfolio(object):
     def from_init_voevent(v):
         """v is a voe.VOEvent"""
 #        assert isinstance(v, voe.VOEvent)
-        t = voe_utils.get_isotime(v)
+        t = utils.get_isotime(v)
         pf = Portfolio(v.ivorn, init_isotime=t)
         return pf
         
@@ -41,7 +40,7 @@ class Portfolio(object):
                         init_isotime = None,
                         skyalert_timestamp = skyalert_time)
         pf.voevents = Portfolio._convert_skyalert_pf_dict_to_voe(skyalert_pf_dict)
-        pf.init_isotime = voe_utils.get_isotime(
+        pf.init_isotime = utils.get_isotime(
                                        pf.voevents[init_ivorn])
         return pf
     

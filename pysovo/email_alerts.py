@@ -4,7 +4,7 @@ import sys
 import getpass
 import smtplib
 import _quick_keys as keys
-import _utils as utils
+import _internal_utils as utils
         
 default_email_config_file="".join((os.environ['HOME'], "/.vo_alerts/email_acc"))
 
@@ -55,9 +55,10 @@ def load_account_settings_from_file( config_filename = default_email_config_file
     try:
         with open(config_filename, 'r') as config_file:
             account = json.loads(config_file.read())
-    except Exception as e:
-        print "Error: Could not load email account"
-        sys.exit()
+    except Exception:
+        print "Error: Could not load email account from "+ config_filename
+        raise 
+    
     return account
 
 def send_email( account,
@@ -92,46 +93,5 @@ def send_email( account,
     smtpserver.close()
     pass
 
-def format_ami_alert(array,
-                    target,
-                    ra,
-                    dec,
-                    timing,
-                    duration,
-                    requester,
-                    comment,
-                    action):
-    
-#      Array=     AMI-SA
-#  Target=    GRB110328A
-#  J2000RA=   16 44 49.93
-#  J2000Dec=  57 35 59.1
-#  Timing=    ST 15.45
-#  Duration=  02.00
-#  Requester= djt
-#  Comment=   Target of Opportunity test
-#
-#where:
-#
-# 'Array'     must be either 'AMI-SA' or 'AMI-LA'.
-# 'Target' and the J2000 coordinates define the observation target.
-# 'Timing'    specifies the start of the observation, either by Local
-#             Sidereal Time 'ST hh.mm', or by using one of the keywords
-#             'Transit' (to observe through transit) or 'ASAP' (to start
-#             the observation as soon as possible).
-# 'Duration'  specifies the length of the observation (hh.mm).
-# 'Requester' identifies the observer.
-# 'Comment'   adds a string of comment text to the observation header.
 
-    alert_text = "".join(["Array=     ",array,"\n",
-                "Target=    ", target, "\n"
-                "J2000RA=   ", ra,"\n",
-                "J2000Dec=  ", dec, "\n",
-                "Timing=    ", timing, "\n",
-                "Duration=  ", duration, "\n",
-                "Requester= ", requester, "\n",
-                "Comment=  ", comment, "\n"
-                "Action=  ", action, "\n"
-                ])
-    return alert_text
 

@@ -1,13 +1,16 @@
-VOEvent parsers derived from the VOEventLib - see http://lib.skyalert.org/VOEventLib/
-
-Let me know if you also want the modified libgen code,
-used to generate voe.py from the schema.
+Basic tools to do things with VOEvents. 
+(e.g. pick out certain events, then send email alerts or new VOEvents, etc.)
 ----------------------------------------------------------------------------------------
 Prerequisites:
-"angles" (for sexagesimal formatting, etc.) -- try
->$ easy_install angles
 
-or goto http://pypi.python.org/pypi/angles/1.1
+VOEventLib, for parsing VOEvent xml packets.  
+http://lib.skyalert.org/VOEventLib/
+
+Astropysics, for everything else:
+http://packages.python.org/Astropysics/index.html
+>sudo easy_install astropysics
+or
+>sudo pip install astropysics
 
 ---------------------------------------------------------------------------------------
 Setup:
@@ -15,8 +18,8 @@ Setup:
 If you want to use the email alert facility, you should run
 >$ python input_email_settings.py
 
-This will prompt you for username, password (hidden) etc. The details are saved under
-$HOME/.vo_alerts/email_acc
+This will prompt you for username, password (input hidden on a plain terminal) etc. 
+The details are saved under $HOME/.vo_alerts/email_acc
 and the file permissions are set so that only you have read access. 
 (This file is also easy to edit manually, 
 but then your password will show up in plain text on screen!)
@@ -33,17 +36,16 @@ To test the alert_response, simply feed it an xml packet via stdin, e.g.
 
 -------------------------------------------------------------------------------------
 To do:
+*Unit tests (now a priority!)
+
+*Example of using astropysics tools to compute target rise  / set / transit times per observatory.
+
 *Implementation of portfolio class (work in progress)
 
 *Skyalert scraping tools (work in progress)
 
-*Unit tests
-
-*Conversion of member variable names to python style e.g. v.where_when. 
-Unfortunately this will break existing code so needs to be done soon or not at all.
-
-*Conversion of examples from the old VOEvent lib, 
-e.g. how to create voevent xml packet from scratch.
+*Implement "email account" as a class, with "outgoing/SMTP" and "incoming/IMAP" as subclasses.
+ Then email_account could do send(), check() - e.g. for communication with the AMI bot.
 
  
 
