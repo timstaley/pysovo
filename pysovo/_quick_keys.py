@@ -11,3 +11,9 @@ class email_account:
     password=None
     
 generate_autocomplete_dictionary_keys(email_account)
+
+class sms_account:
+    username=None
+    api_password=None
+    
+generate_autocomplete_dictionary_keys(sms_account)
