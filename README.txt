@@ -12,6 +12,10 @@ http://packages.python.org/Astropysics/index.html
 or
 >sudo pip install astropysics
 
+If you want to make use of SMS alerts, you will also need textmagic-sms-api-python
+http://code.google.com/p/textmagic-sms-api-python/
+-This is a well written interface to the SMS api provided by www.textmagic.com
+
 ---------------------------------------------------------------------------------------
 Setup:
 
