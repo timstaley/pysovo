@@ -1,3 +1,3 @@
-import pysovo.email_alerts
+import pysovo.email
 
-pysovo.email_alerts.prompt_for_config()
+pysovo.email.prompt_for_config()

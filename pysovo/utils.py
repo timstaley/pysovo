@@ -1,5 +1,18 @@
 from VOEventLib import VOEvent as voe, Vutil as voe_utils
 from astropysics.coords.coordsys import FK5Coordinates 
+import os
+
+def listify(x):
+    if type(x) != list:
+        return [x] 
+    else:
+        return x
+
+def ensure_dir(filename):
+    d = os.path.dirname(filename)
+    if not os.path.exists(d):
+        os.makedirs(d)
+        
 
 def get_isotime(v):
     assert isinstance(v, voe.VOEvent)
@@ -10,7 +23,6 @@ def get_isotime(v):
         return None
     
     
-#Simply a wrapper - to avoid "CamelCase" function names.
 def get_param_names(v):
     '''
     Grabs the "what" section of a voevent, and produces a list of tuples of group name and param name.
@@ -41,5 +53,16 @@ def pull_FK5_from_WhereWhen(v):
                           raerror = ww['positionalError'],
                           decerror = ww['positionalError']
                            )  
+    
+def make_Who(names, emails):
+    names = listify(names)
+    emails = listify(emails)
+    w = voe.Who()
+    w.Author = voe.Author()
+    w.Author.contactName = names
+    w.Author.contactEmail = emails
+    return w
+    
+    
     
     

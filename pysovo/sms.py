@@ -2,21 +2,26 @@ import simplejson as json
 import os
 import sys
 import getpass
+import warnings
 
 import time
 import glob
 import httplib
 import urllib
 
-import _quick_keys as keys
-import _internal_utils as utils
+import quick_keys as keys
+import pysovo.utils as utils
         
-        
-import textmagic
-import textmagic.client
-
 default_sms_config_file="".join((os.environ['HOME'], "/.vo_alerts/sms_acc"))
 
+try:        
+    import textmagic
+    import textmagic.client
+    sms_available = True
+except ImportError:
+    warnings.warn( "NB textmagic not found, SMS alerts not available.", ImportWarning)
+    sms_available = False
+        
 
 # http://api.textmagic.com/https-api/sms-delivery-notification-codes
 delivery_status_key={
@@ -55,14 +60,16 @@ def prompt_for_config( config_filename = default_sms_config_file ):
     return config_filename
 
 def load_account_settings_from_file( config_filename = default_sms_config_file):
-    try:
-        with open(config_filename, 'r') as config_file:
-            account = json.loads(config_file.read())
-    except Exception:
-        print "Error: Could not load email account from "+ config_filename
-        raise 
-    
-    return account
+    if sms_available:
+        try:
+            with open(config_filename, 'r') as config_file:
+                account = json.loads(config_file.read())
+        except Exception:
+            print "Error: Could not load email account from "+ config_filename
+            raise 
+        return account
+    else:
+        return None
 
 def send_sms( account,
                 recipients,

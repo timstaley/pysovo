@@ -40,16 +40,14 @@ To test the alert_response, simply feed it an xml packet via stdin, e.g.
 
 -------------------------------------------------------------------------------------
 To do:
-*Unit tests (now a priority!)
+*More Unit tests
 
-*Example of using astropysics tools to compute target rise  / set / transit times per observatory.
 
 *Implementation of portfolio class (work in progress)
 
 *Skyalert scraping tools (work in progress)
 
-*Implement "email account" as a class, with "outgoing/SMTP" and "incoming/IMAP" as subclasses.
- Then email_account could do send(), check() - e.g. for communication with the AMI bot.
+*Implement email "incoming/IMAP"- e.g. for 2 way communication with an observatory bot.
 
  
 

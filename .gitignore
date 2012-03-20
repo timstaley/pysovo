@@ -3,5 +3,3 @@
 .project
 .pydevproject
 .settings
-pysovo/private_details.local*
-pysovo/private_details.public*

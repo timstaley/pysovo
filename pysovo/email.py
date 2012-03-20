@@ -1,10 +1,10 @@
-import simplejson as json
+import simplejson as simplejson
 import os
 import sys
 import getpass
 import smtplib
-import _quick_keys as keys
-import _internal_utils as utils
+import quick_keys as keys
+import pysovo as ps
         
 default_email_config_file="".join((os.environ['HOME'], "/.vo_alerts/email_acc"))
 
@@ -12,7 +12,7 @@ default_email_config_file="".join((os.environ['HOME'], "/.vo_alerts/email_acc"))
 def prompt_for_config( config_filename = default_email_config_file ):
     default_smtp_server = "smtp.googlemail.com"
     default_smtp_port = 587
-    utils.ensure_dir(config_filename)
+    ps.utils.ensure_dir(config_filename)
     outputfile=open(config_filename, 'w')
     
     account = {}
@@ -29,7 +29,7 @@ def prompt_for_config( config_filename = default_email_config_file ):
     if account[keys.email_account.smtp_port]=="":
         account[keys.email_account.smtp_port] = default_smtp_port
    
-    print "Please enter the smtp username:"
+    print "Please enter the smtp username: (e.g. someone@gmail.com)"
     account[keys.email_account.username]= raw_input(">")
     
     print "Now please enter your password:"
@@ -41,7 +41,7 @@ def prompt_for_config( config_filename = default_email_config_file ):
     print "User", account[keys.email_account.username]
     print "Pass", "(Not shown)"
     
-    outputfile.write(json.dumps(account))
+    outputfile.write(simplejson.dumps(account))
     outputfile.close()
     print ""
     print "Account settings saved to:", config_filename
@@ -52,9 +52,10 @@ def prompt_for_config( config_filename = default_email_config_file ):
     return config_filename
 
 def load_account_settings_from_file( config_filename = default_email_config_file):
+    print "Loading email acc from ", config_filename
     try:
         with open(config_filename, 'r') as config_file:
-            account = json.loads(config_file.read())
+            account = simplejson.loads(config_file.read())
     except Exception:
         print "Error: Could not load email account from "+ config_filename
         raise 
@@ -62,13 +63,15 @@ def load_account_settings_from_file( config_filename = default_email_config_file
     return account
 
 def send_email( account,
-                recipient,
+                recipient_addresses,
                 subject,
                 body_text,
-                debug=False
+                verbose=False
                 ):    
-    if debug:
+    if verbose:
         print "Loaded account, starting SMTP session"
+    
+    recipient_addresses = ps.utils.listify(recipient_addresses)
     
     smtpserver = smtplib.SMTP(account[keys.email_account.smtp_server],
                               account[keys.email_account.smtp_port])
@@ -77,18 +80,20 @@ def send_email( account,
     smtpserver.ehlo
     smtpserver.login(account[keys.email_account.username], 
                      account[keys.email_account.password])
-    if debug:
-        print "Logged in"
         
     sender = account[keys.email_account.username]
-    header = "".join( ['To: ',recipient,'\n',
+    
+    recipients_str=",".join(recipient_addresses)
+    if verbose:
+        print "Logged in, emailing", recipients_str
+    header = "".join( ['To: ',recipients_str,'\n',
                         'From: ',sender,'\n',
                         'Subject: ', subject,'\n'])
     
     msg = "".join( [header,'\n',
                     body_text,'\n\n'])
-    smtpserver.sendmail(sender, recipient, msg)
-    if debug:
+    smtpserver.sendmail(sender, recipient_addresses, msg)
+    if verbose:
         print 'Message sent'
     smtpserver.close()
     pass
