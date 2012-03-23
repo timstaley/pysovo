@@ -90,13 +90,18 @@ def format_ami_email_alert(target_coords, target_name,
                                         s = dec_sign, 
                                         d = abs(int(target_coords.dec.degrees))
                                         )
+    
+    ra_str = target_coords.ra.getHmsStr(canonical=True).replace(":"," ")
+    dec_str = target_coords.dec.getDmsStr(canonical=True).replace(":"," ")
+    if target_coords.dec.degrees >= 0:
+        dec_str = dec_str[1:]
                                         
     #Also, the comment field has only 256 chars.
     alert_message= validate_and_typeset_ami_email_alert(
                    array = "AMI-LA",
                    target = tgt_str[:16], #slice whole thing just to be sure.,
-                   ra = target_coords.ra.getHmsStr(canonical=True).replace(":"," "),
-                   dec = target_coords.dec.getDmsStr(canonical=True).replace(":"," "),
+                   ra = ra_str,
+                   dec = dec_str,
                    timing = "ASAP",
                    duration = "01.00",
                    requester = requester,
@@ -125,6 +130,9 @@ def request_ami_observation(coords,
         target_name = "SWIFT"
         alert_id = voevent.ivorn[len("ivo://nasa.gsfc.gcn/SWIFT#BAT_GRB_Pos_"):]
         comment = "Automated SWIFT ID "+alert_id
+    else:
+        target_name = "4PISKY"
+        comment = "Manual trigger"
       
     alert_message = format_ami_email_alert(coords,
                                             target_name,

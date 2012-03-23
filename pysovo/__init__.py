@@ -18,8 +18,3 @@ import notifications
 import observatories
 import utils
 
-
-
-
- 
-

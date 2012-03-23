@@ -132,7 +132,8 @@ def obs_requested_message(eq_posn,
     note_long, note_short = noted_message(eq_posn, event_time, description)
     
     tgt_status_long, tgt_status_short = format_target_status_text( eq_posn, 
-                                                                  obs_site, current_time
+                                                                  obs_site, 
+                                                                  current_time
                                                                    )
 
     request_long = """\
