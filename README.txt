@@ -30,11 +30,10 @@ The server handshake may need hacking at for other email services.
 
 ------------------------------------------------------------------------------------
 Testing:
-After running the email config, you can then edit and run "sendmail_test.py".
-Also try tinkering with "parse_event_packet.py"
+There are currently a few unit tests, try 
+nosetests -v
 
-To test the alert_response, simply feed it an xml packet via stdin, e.g.
->$ cat test_data/BAT_GRB_Pos_511611-746.xml | ./alert_response.py
+Also see the 'integration_tests' folder.
 
 -------------------------------------------------------------------------------------
 To do:
