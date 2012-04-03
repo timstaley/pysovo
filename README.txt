@@ -6,9 +6,8 @@ Prerequisites:
 VOEventLib, for parsing VOEvent xml packets.  
 http://lib.skyalert.org/VOEventLib/
 
-Astropysics, for everything else. NB currently I have applied some minor fixes, until these are accepted by Erik you should grab my fork:
+Astropysics, for everything else. NB currently I have applied some minor fixes, so for now you will need my fork:
 https://timstaley@github.com/timstaley/astropysics.git
-and checkout the commit: ef5c270c35c34e4ebb0da7dc5257545ea6590bf9
 
 
 If you want to make use of SMS alerts, you will also need textmagic-sms-api-python
