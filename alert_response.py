@@ -12,7 +12,7 @@ notify_contacts.extend([ps.address_book.tim,
 
 notification_email_subject = "4 Pi Sky notification"
 
-default_archive_root = "/home/ts3e11/comet/voe_archive"
+default_archive_root = os.environ["HOME"]+"/comet/voe_archive"
 
 local_config = ps.LocalConfig(email_account = ps.email.load_account_settings_from_file(),
                               sms_account = ps.sms.load_account_settings_from_file())
