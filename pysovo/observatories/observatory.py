@@ -1,3 +1,6 @@
+#pysovo VOEvent Tools
+#Copyright Tim Staley, <timstaley337@gmail.com>, 2012
+
 import astropysics.obstools
 from astropysics.coords.coordsys import FK5Coordinates
 

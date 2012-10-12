@@ -1,3 +1,6 @@
+#pysovo VOEvent Tools
+#Tim Staley, <timstaley337@gmail.com>, 2012
+
 import simplejson as json
 import os
 import sys

@@ -1,3 +1,6 @@
+#pysovo VOEvent Tools
+#Copyright Tim Staley, <timstaley337@gmail.com>, 2012
+
 __all__ = ["address_book",
            "alert_types",
            "email",

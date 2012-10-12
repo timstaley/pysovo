@@ -1,3 +1,7 @@
+#pysovo VOEvent Tools
+#Interface to AMI observatory
+#Copyright Tim Staley, <timstaley337@gmail.com>, 2012
+
 import pysovo as ps 
 import pysovo.email
 from astropysics.coords.coordsys import FK5Coordinates 

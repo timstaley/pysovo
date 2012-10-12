@@ -1,3 +1,6 @@
+#pysovo VOEvent Tools
+#Tim Staley, <timstaley337@gmail.com>, 2012
+
 from VOEventLib import VOEvent as voe, Vutil as voe_utils
 from astropysics.coords.coordsys import FK5Coordinates 
 import os

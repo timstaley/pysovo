@@ -1,3 +1,7 @@
+#pysovo VOEvent Tools
+#Tim Staley 2012
+#Based on various web snippets.
+
 import simplejson as simplejson
 import os
 import sys

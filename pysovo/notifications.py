@@ -1,3 +1,7 @@
+#pysovo VOEvent Tools
+#Notification formatting subroutines
+#Copyright Tim Staley, <timstaley337@gmail.com>, 2012
+
 import pysovo as ps
 import datetime, pytz
 from pysovo import email, sms
