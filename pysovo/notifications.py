@@ -90,8 +90,8 @@ def event_missed_message( eq_posn,
 
 def format_target_status_text(eq_posn, obs_site, current_time):
     assert isinstance(obs_site, ps.observatories.observatory.Observatory)
-    rise, set, transit = obs_site.next_riseSetTransit(eq_posn, current_time,
-                                                      alt = obs_site.target_min_elevation)
+    rise, set, transit = obs_site.nextRiseSetTransit(eq_posn, current_time,
+                                              alt=obs_site.target_min_elevation)
     
     if transit is None:
         return ("Bad request: Target not visible from this observatory around this date.",
@@ -102,7 +102,8 @@ def format_target_status_text(eq_posn, obs_site, current_time):
     long_status=""
     short_status="Status:"
     
-    target_is_on_sky = obs_site.on_sky(eq_posn, current_time)
+    target_is_on_sky = obs_site.onSky(eq_posn, current_time,
+                                      alt=obs_site.target_min_elevation)
     
     if (not target_is_on_sky) and (rise is not None): #Shouldn't need the second test, (not on sky-> not circumpolar -> rise!=None) but check anyway in case of user error.
         long_status += "The target is off sky and will rise next at {rise}\n\n".format(rise=rise.strftime(datetime_format_long))
