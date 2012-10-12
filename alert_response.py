@@ -25,13 +25,13 @@ def main():
     return 0
 
 def voevent_logic(v):
-    archive_voevent(v, rootdir=default_archive_root)
     #SWIFT BAT GRB alert:
     if v.attrib['ivorn'].find("ivo://nasa.gsfc.gcn/SWIFT#BAT_GRB_Pos") == 0:
         swift_bat_grb_logic(v)
 
     if v.attrib['ivorn'].find("ivo://voevent.astro.soton/TEST#") == 0:
         test_logic(v)
+#    archive_voevent(v, rootdir=default_archive_root)
 
 
 
@@ -60,7 +60,7 @@ def swift_bat_grb_logic(v):
                             notify_contacts,
                             subject=notification_email_subject + ": Swift GRB",
                             long_message=long_msg,
-                            send_sms=True,
+                            send_sms=False,
                             short_message=short_msg)
 
 def test_logic(v):

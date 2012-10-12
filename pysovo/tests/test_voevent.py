@@ -16,6 +16,7 @@ class TestBuilders(TestCase):
             vfs = voe.build.from_string(f.read())
         self.assertEqual(objectify.dump(vff), objectify.dump(vfs))
         self.assertEqual(vfs.tag, '{}VOEvent')
+        print vfs.attrib['ivorn']
 
 
 class TestAstroCoords(TestCase):

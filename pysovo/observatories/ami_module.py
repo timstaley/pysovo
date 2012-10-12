@@ -132,7 +132,7 @@ def request_ami_observation(coords,
     target_name = None
     if alert_type == ps.alert_types.swift_grb:
         target_name = "SWIFT"
-        alert_id = voevent.ivorn[len("ivo://nasa.gsfc.gcn/SWIFT#BAT_GRB_Pos_"):]
+        alert_id = voevent.attrib['ivorn'][len("ivo://nasa.gsfc.gcn/SWIFT#BAT_GRB_Pos_"):]
         comment = "Automated SWIFT ID "+alert_id
     else:
         target_name = "4PISKY"
