@@ -2,13 +2,13 @@ import unittest
 from VOEventLib import VOEvent as voe
 
 import pysovo as ps
-import pysovo.observatories.tests.test_data as test_data
+from resources import greenwich
 
 import datetime, pytz
 import astropysics
 
 def print_long_short(type, long, short):
-#    return 
+    return #Switch off debug prints by uncommenting this line
     print
     print "=========================================="
     print "Example {t} messages".format(t=type)
@@ -26,21 +26,21 @@ def print_long_short(type, long, short):
 class TestEventMissedFormatting(unittest.TestCase):
     def test_event_missed_messages(self):
         long_msg, short_msg = ps.notifications.event_missed_message(
-                                        eq_posn = test_data.arbitrary_eqpos, 
-                                        event_time = test_data.vernal_equinox_2012, 
+                                        eq_posn=greenwich.never_visible_source,
+                                        event_time=greenwich.vernal_equinox_2012,
                                         description = "Goodyear blimp", 
                                         reason_missed = "Out of cheese error")
         print_long_short("event missed", long_msg, short_msg)
 
 class TestObsRequestedFormatting(unittest.TestCase):
     def setUp(self):
-        self.time = test_data.vernal_equinox_2012
-        self.site = test_data.greenwich()
+        self.time = greenwich.vernal_equinox_2012
+        self.site = greenwich.greenwich_site()
          
     def test_obs_requested_messages(self):
-        tests = {"circumpolar": test_data.circumpolar_north_transit_later, 
-                 "equatorial, on sky": test_data.equatorial_on_sky_ve, 
-                 "equatorial, off sky" : test_data.equatorial_off_sky_ve}
+        tests = {"circumpolar": greenwich.circumpolar_north_transit_at_ve_p12hr,
+                 "equatorial, on sky": greenwich.equatorial_transiting_at_ve,
+                 "equatorial, off sky" : greenwich.equatorial_transiting_at_ve_p12hr}
         
         for type, posn in tests.iteritems():
             long, short = ps.notifications.obs_requested_message(posn, 

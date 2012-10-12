@@ -8,6 +8,7 @@ __all__ = ["address_book",
            "sms",
            "notifications",
            "observatories",  
+           "voevent",
            "utils", ]
 
 

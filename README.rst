@@ -9,7 +9,7 @@ Basic tools to do things with VOEvents.
 Prerequisites:
 ---------------
 
- - `VOEventLib <http://lib.skyalert.org/VOEventLib/>`_, for parsing VOEvent xml packets.  
+ - `lxml <http://lxml.de/>`_ (version >= 2.3), for parsing VOEvent xml packets.  For recent Ubuntu versions this is as simple as ``sudo apt-get install python-lxml``. Otherwise you can take your pick from ``pip install lxml``, ``easy_install lxml``, or install from source.
  - `Astropysics <http://packages.python.org/Astropysics/>`_, for everything else. **NB I have applied some minor fixes which are not yet pulled into master**, 
    so for now you will need my `fork <https://github.com/timstaley/astropysics/tree/pysovo-compatible-2012-10-12>`_.
  - If you want to make use of SMS alerts, you will also need `textmagic-sms-api-python <http://code.google.com/p/textmagic-sms-api-python/>`_.
