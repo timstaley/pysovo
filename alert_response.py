@@ -7,7 +7,8 @@ import pysovo as ps
 #-----------------------------------------------------------------------------------------
 notify_contacts = []
 notify_contacts.extend([ps.address_book.tim,
-                         ps.address_book.rob])
+                         ps.address_book.rob,
+                         ps.address_book.rene, ])
 
 notification_email_subject = "4 Pi Sky notification"
 
