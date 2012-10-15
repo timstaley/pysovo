@@ -16,7 +16,8 @@ class TestBuilders(TestCase):
             vfs = voe.build.from_string(f.read())
         self.assertEqual(objectify.dump(vff), objectify.dump(vfs))
         self.assertEqual(vfs.tag, '{}VOEvent')
-        print vfs.attrib['ivorn']
+        self.assertEqual(vfs.attrib['ivorn'],
+                         'ivo://nasa.gsfc.gcn/SWIFT#BAT_GRB_Pos_532871-729')
 
 
 class TestAstroCoords(TestCase):

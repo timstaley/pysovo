@@ -1,5 +1,5 @@
 class LocalConfig():
-    def __init__(self, 
+    def __init__(self,
                  email_account=None,
                  sms_account=None,
                   ivorn_prefix=None):

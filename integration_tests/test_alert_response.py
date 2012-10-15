@@ -11,7 +11,7 @@ import alert_response
 
 def main():
     obs.ami.email_address = ps.address_book.test.email #Do NOT email AMI
-    obs.ami.default_action = "CHECK" #Insurance.
+    obs.ami.default_action = "CHECK" #And don't request an observation.
     obs.ami.internal_request_mechanism = functools.partial(
                        ami_details.email_ami,
                        subject="[TEST] " + ami_details.request_email_subject

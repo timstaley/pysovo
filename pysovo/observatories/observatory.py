@@ -40,14 +40,18 @@ class Observatory(astropysics.obstools.Site):
         self.short_name = short_name
         self.email_address = email_address
         self.ip_address = ip_address
-        self.target_min_elevation = target_min_elevation #Minimum target elevation, in degrees above horizon
+        #Minimum target elevation, in degrees above horizon
+        self.target_min_elevation = target_min_elevation
 
     @staticmethod
     def check_available():
-        """A function to determine whether an observatory is currently available for ToO requests.
+        """
+        A function to determine whether an observatory is currently available 
+        for ToO requests.
         
-        Where possible, this should either communicate with the observatory directly,
-        or perhaps check a local table of availability to be updated as necessary.
+        Where possible, this should either communicate with the observatory 
+        directly, or perhaps check a local table of availability to be updated 
+        as necessary.
         
         Returns a boolean.
         """
