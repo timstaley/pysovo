@@ -59,8 +59,8 @@ class TestAMIRequestMethod(unittest.TestCase):
                                    self.voevent,
                                    self.config)
 
-        print
-        print "Sample AMI request body text:"
-        print observation_text
+#        print
+#        print "Sample AMI request body text:"
+#        print observation_text
 
 

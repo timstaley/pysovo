@@ -20,6 +20,7 @@ def main():
     alert_response.notify_contacts = [ ps.address_book.tim  ]  # Only notify test contacts
     alert_response.notification_email_subject = "[TEST] " + alert_response.notification_email_subject
 
+    alert_response.default_archive_root = "./"
 
 
     test_packet = ps.voevent.build.from_file(datapaths.swift_bat_grb_pos_v2)

@@ -31,7 +31,7 @@ def voevent_logic(v):
 
     if v.attrib['ivorn'].find("ivo://voevent.astro.soton/TEST#") == 0:
         test_logic(v)
-#    archive_voevent(v, rootdir=default_archive_root)
+    archive_voevent(v, rootdir=default_archive_root)
 
 
 
@@ -69,13 +69,13 @@ def test_logic(v):
     ps.notifications.notify(ps.address_book.tim,
                             msg)
 
-#def archive_voevent(v, rootdir):
-#    relpath, filename = v.ivorn.split('//')[1].split('#')
-#    filename += ".xml"
-#    fullpath = os.path.sep.join((rootdir, relpath, filename))
-#    ps.utils.ensure_dir(fullpath)
-#    with open(fullpath, 'w') as f:
-#        f.write(voe_utils.stringVOEvent(v))
+def archive_voevent(v, rootdir):
+    relpath, filename = v.attrib['ivorn'].split('//')[1].split('#')
+    filename += ".xml"
+    fullpath = os.path.sep.join((rootdir, relpath, filename))
+    ps.utils.ensure_dir(fullpath)
+    with open(fullpath, 'w') as f:
+        f.write(ps.voevent.output.to_string(v))
 
 
 if __name__ == '__main__':

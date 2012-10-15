@@ -2,12 +2,18 @@
 #Convenience functions allowing easy access to information in VOEvent packets. 
 #Tim Staley, <timstaley337@gmail.com>, 2012
 
-from lxml import objectify
+from lxml import objectify, etree
 from astropysics.coords.coordsys import FK5Coordinates
 
+from . import voevent_schema
+voevent_v2_0_schema = etree.XMLSchema(
+                        etree.fromstring(voevent_schema.v2_0_str))
+
+#NB this is not really used as a class but a namespace, 
+# so we use lowercase_with_underscores name convention.
 class build(object):
     @staticmethod
-    def from_string(s):
+    def from_string(s, validate=False):
         """
         Wrapper to parse a VOEvent tree, taking care of some subtleties.
         
@@ -38,13 +44,43 @@ class build(object):
         their parent, this breaks the python-attribute style access mechanism.
         We can get around it without altering root, via e.g
          who = v['{}Who']
-        But I prefer this solution: 
-        by simply replacing the namespace tag with an empty entry,
-        everything works as expected.
-        (Until the time comes to write out the VOEvent! So take care.) 
+        
+        Alternatively, we can temporarily ditch the namespace altogether.
+        This makes access to elements easier, but requires care to reinsert 
+        the namespace upon output. 
+        
+        I've gone for the latter option. 
         """
-        v.tag = v.tag.replace(v.nsmap['voe'], '')
+        v.tag = v.tag.replace(''.join(('{', v.nsmap['voe'], '}')),
+                               '')
+        # Now v.tag = '{}VOEvent'
         return
+
+    @staticmethod
+    def _reinsert_root_tag_prefix(v):
+        """
+        Returns 'voe' namespace prefix to root tag.
+        """
+        v.tag = ''.join(('{', v.nsmap['voe'], '}VOEvent'))
+        return
+
+class output(object):
+    @staticmethod
+    def to_string(v, validate=False, pretty_print=True, xml_declaration=True):
+        """Converts voevent 'v' to string.
+        
+        NB Encoding is UTF-8, in line with V2 schema.
+        Declaring the encoding can cause diffs with the original loaded VOEvent,
+        but I think it's probably the right thing to .
+        """
+        build._reinsert_root_tag_prefix(v)
+        s = etree.tostring(v, pretty_print=pretty_print,
+                           xml_declaration=xml_declaration,
+                           encoding='UTF-8')
+        build._remove_root_tag_prefix(v)
+        return s
+
+
 #
 #def get_param_names(v):
 #    '''
@@ -88,7 +124,7 @@ def pull_astro_coords(v):
                           raerror=err_deg, decerror=err_deg)
 
 
-#
+
 #def get_isotime(v):
 #    assert isinstance(v, voe.VOEvent)
 #    try:
