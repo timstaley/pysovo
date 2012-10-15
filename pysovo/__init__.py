@@ -19,6 +19,7 @@ from local_config import LocalConfig
 #import quick_keys #Leave this as internal
 #Don't import sms unless user requests specifically
 import notifications
+import voevent
 import observatories
 import utils
 
