@@ -3,6 +3,7 @@ import sys, os
 import datetime, pytz
 from pysovo import observatories as obs
 import pysovo as ps
+import voeparse
 
 #-----------------------------------------------------------------------------------------
 notify_contacts = []
@@ -21,7 +22,7 @@ local_config = ps.LocalConfig(email_account=ps.email.load_account_settings_from_
 #-----------------------------------------------------------------------------------------
 def main():
     s = sys.stdin.read()
-    v = ps.voevent.build.from_string(s)
+    v = voeparse.loads(s)
     voevent_logic(v)
     return 0
 
@@ -38,7 +39,7 @@ def voevent_logic(v):
 
 def swift_bat_grb_logic(v):
     now = datetime.datetime.now(pytz.utc)
-    posn = ps.voevent.pull_astro_coords(v)
+    posn = ps.voevent_utils.pull_astro_coords(v)
     if posn.dec.degrees > -10.0:
         obs.ami.request_observation(posn,
                                     ps.alert_types.swift_grb,
@@ -76,7 +77,7 @@ def archive_voevent(v, rootdir):
     fullpath = os.path.sep.join((rootdir, relpath, filename))
     ps.utils.ensure_dir(fullpath)
     with open(fullpath, 'w') as f:
-        f.write(ps.voevent.output.to_string(v))
+        voeparse.dump(v, f)
 
 
 if __name__ == '__main__':

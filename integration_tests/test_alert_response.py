@@ -6,6 +6,7 @@ import functools
 #(You might temporarily fix a broken import - which then remains broken)
 from pysovo.tests.resources import datapaths
 from pysovo.observatories import ami_module
+import voeparse
 import alert_response as ar
 
 def main():
@@ -22,7 +23,7 @@ def main():
     ar.default_archive_root = "./"
 
 
-    test_packet = ar.ps.voevent.build.from_file(datapaths.swift_bat_grb_pos_v2)
+    test_packet = voeparse.load(datapaths.swift_bat_grb_pos_v2)
     print "Packet loaded, ivorn", test_packet.attrib['ivorn']
 
     ar.voevent_logic(test_packet)

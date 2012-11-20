@@ -1,4 +1,5 @@
 import unittest
+import voeparse
 import pysovo
 
 from pysovo.observatories import ami
@@ -17,8 +18,7 @@ class TestAMIRequestMethod(unittest.TestCase):
         ami.internal_request_mechanism = dummy_func
         ami.default_action = "CHECK"
 
-        self.voevent = pysovo.voevent.build.from_file(
-                                              datapaths.swift_bat_grb_pos_v2)
+        self.voevent = voeparse.load(datapaths.swift_bat_grb_pos_v2)
         self.config = pysovo.LocalConfig()
 
     def test_coord_formatting(self):
@@ -54,10 +54,10 @@ class TestAMIRequestMethod(unittest.TestCase):
 
     def test_formatting_does_not_throw(self):
         observation_text = ami.request_observation(
-                                   pysovo.voevent.pull_astro_coords(self.voevent),
-                                   "swift_grb",
-                                   self.voevent,
-                                   self.config)
+                               pysovo.voevent_utils.pull_astro_coords(self.voevent),
+                               "swift_grb",
+                               self.voevent,
+                               self.config)
 
 #        print
 #        print "Sample AMI request body text:"
