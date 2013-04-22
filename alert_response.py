@@ -1,23 +1,24 @@
 #!/usr/bin/python
 import sys, os
 import datetime, pytz
-from pysovo import observatories as obs
-import pysovo as ps
 import voeparse
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
+from pysovo import observatories as obs
+from pysovo import contacts
+import pysovo as ps
 
 #-----------------------------------------------------------------------------------------
-notify_contacts = []
-notify_contacts.extend([ps.address_book.tim,
-                         ps.address_book.rob,
-                         ps.address_book.rene, ])
+notify_contacts = [contacts['tim'],
+                   contacts['rob'],
+                   contacts['rene'], ]
 
 notification_email_subject = "4 Pi Sky notification"
 
 default_archive_root = os.environ["HOME"] + "/comet/voe_archive"
 
-local_config = ps.LocalConfig(email_account=ps.email.load_account_settings_from_file(),
-                              sms_account=ps.sms.load_account_settings_from_file())
-
+active_sites = [obs.ami.site]
 
 #-----------------------------------------------------------------------------------------
 def main():
@@ -39,37 +40,42 @@ def voevent_logic(v):
 
 def swift_bat_grb_logic(v):
     now = datetime.datetime.now(pytz.utc)
-    posn = ps.voevent_utils.pull_astro_coords(v)
+    posn = ps.utils.convert_voe_coords_to_fk5(voeparse.pull_astro_coords(v))
     if posn.dec.degrees > -10.0:
-        obs.ami.request_observation(posn,
-                                    ps.alert_types.swift_grb,
-                                    v,
-                                    local_config)
+        alert_id, alert_id_short = ps.utils.pull_swift_bat_id(v)
+        target_name = 'SWIFT_' + alert_id_short
+        comment = 'Automated SWIFT ID ' + alert_id
+        duration = datetime.timedelta(hours=1)
 
-        long_msg, short_msg = ps.notifications.obs_requested_message(posn,
-                                      event_time=now, #should grab from voevent
-                                      description="SWIFT GRB",
-                                      obs_site=obs.ami,
-                                      current_time=now)
+        obs.ami.request_observation(posn, target_name, duration,
+                        timing='ASAP',
+                        requested_action='QUEUE',
+                        requester=contacts['ami']['requester'],
+                        recipient_email_address=contacts['ami']['email'],
+                        email_account=ps.default_email_account,
+                        comment=comment,
+                        )
 
-    else:
-        long_msg, short_msg = ps.notifications.event_missed_message(posn,
-                                      event_time=now, #should grab from voevent
-                                      description="SWIFT GRB",
-                                      reason_missed="No suitable observation facilities")
 
-    ps.notifications.notify(local_config,
-                            notify_contacts,
-                            subject=notification_email_subject + ": Swift GRB",
-                            long_message=long_msg,
-                            send_sms=False,
-                            short_message=short_msg)
+        notify_msg = ps.notify.generate_report_text(
+                                {'position': posn, 'description': 'Swift GRB'},
+                                active_sites,
+                                now)
+        ps.comms.email.send_email(ps.default_email_account,
+                            [p['email'] for p in notify_contacts],
+                            notification_email_subject,
+                            notify_msg)
+
+
 
 def test_logic(v):
     now = datetime.datetime.now(pytz.utc)
-    msg = "Test packet receieved at time " + now.strftime("%y-%m-%d_%H-%M-%S") + "\n"
-    ps.notifications.notify(ps.address_book.tim,
+    msg = "Test packet received at time %s\n" % now.strftime("%y-%m-%d %H:%M:%S")
+    ps.comms.email.send_email(ps.default_email_account,
+                            contacts['test']['email'],
+                            'Test packet received',
                             msg)
+    archive_voevent(v, rootdir=default_archive_root)
 
 def archive_voevent(v, rootdir):
     relpath, filename = v.attrib['ivorn'].split('//')[1].split('#')

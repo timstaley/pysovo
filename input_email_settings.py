@@ -1,3 +1,2 @@
-import pysovo.email
-
-pysovo.email.prompt_for_config()
+from pysovo.comms.email import prompt_for_config
+prompt_for_config()

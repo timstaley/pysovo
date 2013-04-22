@@ -1,54 +1,77 @@
 import unittest
+from pysovo.tests.resources import greenwich
+import pysovo.notify as notify
 
-import pysovo as ps
-from resources import greenwich
+from pysovo.notify import TargetStatusKeys as tkeys
 
-import datetime, pytz
-import astropysics
-
-def print_long_short(type, long, short):
-    return #Switch off debug prints by uncommenting this line
-    print
-    print "=========================================="
-    print "Example {t} messages".format(t=type)
-    print "long:"
-    print "--------------------------------"
-    print long
-    print "--------------------------------"
-    print "Short:"
-    print short
-    print "=========================================="
-
-
-
-
-class TestEventMissedFormatting(unittest.TestCase):
-    def test_event_missed_messages(self):
-        long_msg, short_msg = ps.notifications.event_missed_message(
-                                        eq_posn=greenwich.never_visible_source,
-                                        event_time=greenwich.vernal_equinox_2012,
-                                        description="Goodyear blimp",
-                                        reason_missed="Out of cheese error")
-        print_long_short("event missed", long_msg, short_msg)
-
-class TestObsRequestedFormatting(unittest.TestCase):
+class TestSiteReportCalcs(unittest.TestCase):
     def setUp(self):
         self.time = greenwich.vernal_equinox_2012
-        self.site = greenwich.greenwich_site()
+        self.site = greenwich.greenwich_site
+        self.target = greenwich.equatorial_transiting_at_ve
 
-    def test_obs_requested_messages(self):
-        tests = {"circumpolar": greenwich.circumpolar_north_transit_at_ve_p12hr,
+    def test_status(self):
+        test_cases = {"circumpolar": greenwich.circumpolar_north_transit_at_ve_p12hr,
                  "equatorial, on sky": greenwich.equatorial_transiting_at_ve,
-                 "equatorial, off sky" : greenwich.equatorial_transiting_at_ve_p12hr}
+                 "equatorial, off sky" : greenwich.equatorial_transiting_at_ve_p12hr,
+                 "never": greenwich.never_visible_source}
 
-        for type, posn in tests.iteritems():
-            long, short = ps.notifications.obs_requested_message(posn,
-                                                                 event_time=self.time,
-                                                                 description="flying monkey",
-                                                                 obs_site=self.site,
-                                                                 current_time=self.time)
-            print_long_short(type, long, short)
+#        print
+#        for k, v in test_cases.iteritems():
+#            print "-------------"
+#            print k, ":"
+#            for k2, v2 in notify.site_report(v, self.site, self.time).iteritems():
+#                print k2, ":", str(v2)
+
+    def test_always_visible(self):
+        e = notify.site_report(greenwich.circumpolar_north_transit_at_ve,
+                                    self.site, self.time)
+        self.assertEqual(e[tkeys.type], 'always')
+
+    def test_never_visible(self):
+        e = notify.site_report(greenwich.never_visible_source,
+                                    self.site, self.time)
+        self.assertEqual(e[tkeys.type], 'never')
+
+class TestEmptyDisplay(unittest.TestCase):
+    def test_empty(self):
+        target = {'position':greenwich.circumpolar_north_transit_at_ve,
+                'description':'UFO'}
+        print "\n**************************"
+        print notify.long_template.render(target=target,
+                                          note_time=greenwich.vernal_equinox_2012,
+                                          dt_style=notify.datetime_format_long)
+
+class TestSiteReportDisplay(unittest.TestCase):
+    def setUp(self):
+        self.time = greenwich.vernal_equinox_2012
+        self.sites = [greenwich.greenwich_site,
+                      greenwich.anti_site]
+        def test_tgt(tgt):
+            tgt_dict = {'position': tgt, 'description': 'test event'}
+            print "\n**************************"
+            print notify.generate_report_text(tgt_dict, self.sites, self.time)
+        self.test_tgt = test_tgt
+
+    def test_never_vis(self):
+        self.test_tgt(greenwich.never_visible_source)
+    def test_circumpolar(self):
+        self.test_tgt(greenwich.circumpolar_north_transit_at_ve_m1hr)
+    def test_equatorial_up_now(self):
+        self.test_tgt(greenwich.equatorial_transiting_at_ve)
 
 
+#    def test_obs_requested_messages(self):
+#        tests = {"circumpolar": greenwich.circumpolar_north_transit_at_ve_p12hr,
+#                 "equatorial, on sky": greenwich.equatorial_transiting_at_ve,
+#                 "equatorial, off sky" : greenwich.equatorial_transiting_at_ve_p12hr}
+#
+#        for type, posn in tests.iteritems():
+#            long, short = ps.notifications.obs_requested_message(posn,
+#                                                                 event_time=self.time,
+#                                                                 description="flying monkey",
+#                                                                 obs_site=self.site,
+#                                                                 current_time=self.time)
+#
 
 

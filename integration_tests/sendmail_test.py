@@ -1,14 +1,14 @@
 #!/usr/bin/python
 
-from pysovo import email, address_book
+from pysovo.comms import email
+from pysovo import contacts
 
 def main():
     account = email.load_account_settings_from_file()
-    
-    
+
     test_message= """Test 1 - single recipient"""
     email.send_email(account,
-                     recipient_addresses= address_book.test.email,
+                     recipient_addresses=contacts['test']['email'],
                      subject="Python email test",
                      body_text=test_message,
                      verbose=True)
@@ -18,7 +18,8 @@ def main():
     
     email.send_email(account,
     #                        recipients= address_book.email_addresses["test"],
-                     recipient_addresses=[ address_book.tim.email,address_book.test.email],
+                     recipient_addresses=[ contacts['tim']['email'],
+                                          contacts['test']['email']],
                      subject="Python email test",
                      body_text=test_message,
                      verbose=True)

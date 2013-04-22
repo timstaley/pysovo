@@ -1,0 +1,9 @@
+Array=     {{array}}
+Target=    {{target_name|truncate(16,true)}}
+J2000RA=   {{target_coords|ami_ra}}
+J2000Dec=  {{target_coords|ami_dec}}
+Timing=    {{timing}}
+Duration=  {{duration|ami_duration}}
+Requester= {{requester}}
+Comment=   {{comment|truncate(255,true)}}
+Action=    {{action}}

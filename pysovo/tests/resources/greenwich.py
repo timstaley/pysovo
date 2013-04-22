@@ -1,27 +1,38 @@
 #pysovo VOEvent Tools 
 #Tim Staley, <timstaley337@gmail.com>, 2012
-import astropysics.coords
-from pysovo.observatories.observatory import Observatory
+
 import datetime, pytz
 import unittest
 
-"""An example obs_site initialization, with equatorial positions of known 
+"""An example obs_site initialization, with equatorial positions of known
 transit time, etc, for unit testing purposes."""
 
 from astropysics.coords.coordsys import FK5Coordinates
+import astropysics.obstools
 
 #---------------------------------------------------------------------------
 #Test data: 
 
-def greenwich_site():
-    return Observatory(lat=51.5,
-                        long=0,
-                        site_altitude=0,
-                        target_min_elevation=0,
-                        tz=0,
-                        name="Royal Greenwich Observatory",
-                        short_name="Greenwich"
-                        )
+greenwich_site = astropysics.obstools.Site(lat=51.5,
+                                       long=0,
+                                        alt=0,
+                                        tz=0,
+                                        name="Greenwich"
+                                        )
+greenwich_site.target_min_elevation = 0
+greenwich_site.long_name = "Royal Greenwich Observatory"
+
+
+#def antipodean_site():
+anti_site = astropysics.obstools.Site(lat= -38.5,
+                                       long=180,
+                                        alt=0,
+                                        tz=12,
+                                        name="Antipodean"
+                                        )
+anti_site.target_min_elevation = 0
+anti_site.long_name = "Antipodean Observatory"
+
 
 vernal_equinox_2012 = datetime.datetime(2012, 03, 20,
                                            5, 14,
