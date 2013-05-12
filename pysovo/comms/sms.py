@@ -1,6 +1,7 @@
-#pysovo VOEvent Tools
-#Tim Staley, <timstaley337@gmail.com>, 2012
-
+"""A few subroutines written to interface with the SMS API.
+Currently not in use and so un-maintained,
+but I think it should all basically still work.
+"""
 import simplejson as json
 import os
 import sys

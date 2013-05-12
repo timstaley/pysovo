@@ -51,6 +51,7 @@ def request_observation(target_coords,
                            recipient_addresses=recipient_email_address,
                            subject=request_email_subject,
                            body_text=mail_text)
+    return mail_text
 ##---------------------------------------------------------------
 
 #Formatting specification, for reference:

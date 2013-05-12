@@ -19,13 +19,14 @@ env.filters['datetime'] = format_datetime
 #------------------------------------------------------------------------------
 long_template = env.get_template('notify_long.txt')
 
-def generate_report_text(target_info, sites, dtime):
+def generate_report_text(target_info, sites, dtime, actions_taken):
     posn = target_info['position']
     site_reports = [(site, site_report(posn, site, dtime))
                             for site in sites]
     return long_template.render(target=target_info,
                                 note_time=dtime,
                                 site_reports=site_reports,
+                                actions_taken=actions_taken,
                                 dt_style=datetime_format_long)
 
 #-----------------------------------------------------------------

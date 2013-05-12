@@ -1,0 +1,4 @@
+include *.txt *.py
+recursive-include integration_tests *.py
+include pysovo/tests/resources/*.xml
+

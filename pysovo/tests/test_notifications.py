@@ -73,5 +73,14 @@ class TestSiteReportDisplay(unittest.TestCase):
 #                                                                 obs_site=self.site,
 #                                                                 current_time=self.time)
 #
-
+class TestActionsDisplay(unittest.TestCase):
+    def test_action(self):
+        target = {'position':greenwich.circumpolar_north_transit_at_ve,
+                'description':'UFO'}
+        actions = ["Observation requested from AMI."]
+        print "\n**************************"
+        print notify.long_template.render(target=target,
+                                          note_time=greenwich.vernal_equinox_2012,
+                                          dt_style=notify.datetime_format_long,
+                                          actions_taken=actions)
 

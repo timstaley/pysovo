@@ -29,5 +29,15 @@ Transit alt-az position: {{vis.transit_position}}
 {% endfor %}
 All times refer to UTC.
 
+==============
+Actions taken:
+==============
+{% for action in actions_taken %}
+{{ action }}
+{% else %}
+No follow-ups requested.
+{% endfor %}
+
+
 Best regards,
 4 Pi Sky Bot.

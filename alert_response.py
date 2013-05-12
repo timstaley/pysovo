@@ -14,7 +14,7 @@ notify_contacts = [contacts['tim'],
                    contacts['rob'],
                    contacts['rene'], ]
 
-notification_email_subject = "4 Pi Sky notification"
+notification_email_prefix = "[4 Pi Sky] "
 
 default_archive_root = os.environ["HOME"] + "/comet/voe_archive"
 
@@ -41,10 +41,12 @@ def voevent_logic(v):
 def swift_bat_grb_logic(v):
     now = datetime.datetime.now(pytz.utc)
     posn = ps.utils.convert_voe_coords_to_fk5(voeparse.pull_astro_coords(v))
+    actions_taken = []
+    alert_id, alert_id_short = ps.utils.pull_swift_bat_id(v)
+    target_name = 'SWIFT_' + alert_id_short
+    comment = 'Automated SWIFT ID ' + alert_id
+
     if posn.dec.degrees > -10.0:
-        alert_id, alert_id_short = ps.utils.pull_swift_bat_id(v)
-        target_name = 'SWIFT_' + alert_id_short
-        comment = 'Automated SWIFT ID ' + alert_id
         duration = datetime.timedelta(hours=1)
 
         obs.ami.request_observation(posn, target_name, duration,
@@ -55,16 +57,17 @@ def swift_bat_grb_logic(v):
                         email_account=ps.default_email_account,
                         comment=comment,
                         )
+        actions_taken.append('Observation requested from AMI.')
 
-
-        notify_msg = ps.notify.generate_report_text(
+    notify_msg = ps.notify.generate_report_text(
                                 {'position': posn, 'description': 'Swift GRB'},
                                 active_sites,
-                                now)
-        ps.comms.email.send_email(ps.default_email_account,
-                            [p['email'] for p in notify_contacts],
-                            notification_email_subject,
-                            notify_msg)
+                                now,
+                                actions_taken)
+    ps.comms.email.send_email(ps.default_email_account,
+                        [p['email'] for p in notify_contacts],
+                        notification_email_prefix + target_name,
+                        notify_msg)
 
 
 

@@ -1,8 +1,7 @@
+voevent-parse
 Astropysics
-Jinja2==2.6
-nose
+scipy
+Jinja2
 python-dateutil
 pytz
-scipy
-voevent-parse==0.1.0
 
