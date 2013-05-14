@@ -5,11 +5,10 @@ import voeparse
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-from pysovo import observatories as obs
 from pysovo import contacts
 import pysovo as ps
-
-#-----------------------------------------------------------------------------------------
+import ami
+#-------------------------------------------------------------------------------
 notify_contacts = [contacts['tim'],
                    contacts['rob'],
                    contacts['rene'], ]
@@ -18,9 +17,9 @@ notification_email_prefix = "[4 Pi Sky] "
 
 default_archive_root = os.environ["HOME"] + "/comet/voe_archive"
 
-active_sites = [obs.ami.site]
+active_sites = [ami.site]
 
-#-----------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 def main():
     s = sys.stdin.read()
     v = voeparse.loads(s)
@@ -49,14 +48,16 @@ def swift_bat_grb_logic(v):
     if posn.dec.degrees > -10.0:
         duration = datetime.timedelta(hours=1)
 
-        obs.ami.request_observation(posn, target_name, duration,
-                        timing='ASAP',
-                        requested_action='QUEUE',
-                        requester=contacts['ami']['requester'],
-                        recipient_email_address=contacts['ami']['email'],
-                        email_account=ps.default_email_account,
-                        comment=comment,
-                        )
+        ami_request = ami.request_email(posn, target_name, duration,
+                      timing='ASAP',
+                      action='QUEUE',
+                      requester=contacts['ami']['requester'],
+                      comment=comment)
+        ps.comms.email.send_email(account=ps.default_email_account,
+                                recipient_addresses=contacts['ami']['email'],
+                                subject=ami.request_email_subject,
+                                body_text=ami_request)
+
         actions_taken.append('Observation requested from AMI.')
 
     notify_msg = ps.notify.generate_report_text(

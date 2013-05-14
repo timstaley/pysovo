@@ -10,7 +10,6 @@ default_email_config_file = os.path.join(config_folder, "email_acc")
 
 import pysovo.comms
 import pysovo.utils
-import pysovo.observatories
 import pysovo.notify
 
 try:

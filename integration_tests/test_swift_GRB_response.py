@@ -10,7 +10,7 @@ import voeparse
 ar.ps.comms.email.send_email = ar.ps.comms.email.dummy_email_send_function
 ar.notification_email_prefix = "[TEST] " + ar.notification_email_prefix
 ar.notify_contacts = [ ar.contacts['test']  ]  # Only notify test contacts
-ar.contacts['ami']['email'] = ar.contacts['test']['email'] #Do NOT email AMI
+ar.contacts['ami']['email'] = 'DUMMY' + ar.contacts['ami']['email'] #Do NOT email AMI
 ar.default_archive_root = "./"
 
 def main():

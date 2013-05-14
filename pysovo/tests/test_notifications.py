@@ -50,7 +50,8 @@ class TestSiteReportDisplay(unittest.TestCase):
         def test_tgt(tgt):
             tgt_dict = {'position': tgt, 'description': 'test event'}
             print "\n**************************"
-            print notify.generate_report_text(tgt_dict, self.sites, self.time)
+            print notify.generate_report_text(tgt_dict, self.sites, self.time,
+                                              actions_taken=[])
         self.test_tgt = test_tgt
 
     def test_never_vis(self):
