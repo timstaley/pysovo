@@ -8,9 +8,9 @@ with open('requirements.txt') as f:
 setup(
     name="pysovo",
     version="0.1.0",
-    packages=['pysovo', 'pysovo.comms', 'pysovo.observatories', 
-              'pysovo.tests', 'pysovo.tests.resources','pysovo.tests.test_observatories'],
-    package_data={'pysovo':['tests/resources/*.xml']}, 
+    packages=['pysovo', 'pysovo.comms',
+              'pysovo.tests', 'pysovo.tests.resources'],
+    package_data={'pysovo':['tests/resources/*.xml', 'templates/*.txt']}, 
     description="Utility scripts for reacting to received VOEvent packets",
     author="Tim Staley",
     author_email="timstaley337@gmail.com",

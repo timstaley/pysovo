@@ -6,8 +6,12 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 from pysovo import contacts
+from pysovo.formatting import format_datetime
 import pysovo as ps
 import ami
+
+from jinja2 import Environment, PackageLoader
+
 #-------------------------------------------------------------------------------
 notify_contacts = [contacts['tim'],
                    contacts['rob'],
@@ -18,6 +22,11 @@ notification_email_prefix = "[4 Pi Sky] "
 default_archive_root = os.environ["HOME"] + "/comet/voe_archive"
 
 active_sites = [ami.site]
+
+
+env = Environment(loader=PackageLoader('pysovo', 'templates'),
+                  trim_blocks=True)
+env.filters['datetime'] = format_datetime
 
 #-------------------------------------------------------------------------------
 def main():
@@ -60,7 +69,7 @@ def swift_bat_grb_logic(v):
 
         actions_taken.append('Observation requested from AMI.')
 
-    notify_msg = ps.notify.generate_report_text(
+    notify_msg = generate_report_text(
                                 {'position': posn, 'description': 'Swift GRB'},
                                 active_sites,
                                 now,
@@ -89,6 +98,17 @@ def archive_voevent(v, rootdir):
     with open(fullpath, 'w') as f:
         voeparse.dump(v, f)
 
+def generate_report_text(target_info, sites, dtime, actions_taken):
+    posn = target_info['position']
+    site_reports = [(site, ps.ephem.visibility(posn, site, dtime))
+                            for site in sites]
+    notification_template = env.get_template('notify_example.txt')
+    msg = notification_template.render(target=target_info,
+                                note_time=dtime,
+                                site_reports=site_reports,
+                                actions_taken=actions_taken,
+                                dt_style=ps.formatting.datetime_format_long)
+    return msg
 
 if __name__ == '__main__':
     sys.exit(main())

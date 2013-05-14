@@ -9,8 +9,8 @@ config_folder = os.path.join(os.environ['HOME'], '.pysovo')
 default_email_config_file = os.path.join(config_folder, "email_acc")
 
 import pysovo.comms
+import pysovo.ephem
 import pysovo.utils
-import pysovo.notify
 
 try:
     contacts_file = os.path.join(config_folder, 'contacts.json')

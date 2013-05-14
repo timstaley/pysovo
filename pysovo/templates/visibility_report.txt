@@ -1,0 +1,17 @@
+{{site.name}} observatory:
+LST: {{vis.site_lst}} 
+Target is {{vis.type}} visible.
+{% if vis.type == "never" %}
+(Always below horizon.)
+{% endif %}
+{% if vis.type == "always" %}
+Next transit time:	{{vis.transit_time|datetime(dt_style)}}
+Transit alt-az position: {{vis.transit_position}}
+{% endif %}
+{% if vis.type == "sometimes" %}
+Currently visible? {{vis.visible_now }}
+Rise time:		{{vis.rise_time|datetime(dt_style)}}
+Transit time:		{{vis.transit_time|datetime(dt_style)}}
+Set time:		{{ vis.set_time|datetime(dt_style)}}
+Transit alt-az position: {{vis.transit_position}}
+{% endif %}

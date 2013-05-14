@@ -1,39 +1,13 @@
+"""
+Commonly used routines for determining target ephemeris and visibilities.
+"""
+
 import datetime, pytz
 import astropysics.obstools
 
-import jinja2
-from jinja2 import Environment, PackageLoader
-env = Environment(loader=PackageLoader('pysovo', 'templates'),
-                  trim_blocks=True)
-#----------------------------------------------------
-datetime_format_long = "%y-%m-%d %H:%M:%S (%A)"
-datetime_format_short = "%a%H:%M"
-time_format_short = "%H:%M"
-def format_datetime(dt, format=None):
-    if format:
-        return dt.strftime(format)
-    else:
-        return dt #Converts to a reasonable default string anyway.
-
-env.filters['datetime'] = format_datetime
-#------------------------------------------------------------------------------
-long_template = env.get_template('notify_long.txt')
-
-def generate_report_text(target_info, sites, dtime, actions_taken):
-    posn = target_info['position']
-    site_reports = [(site, site_report(posn, site, dtime))
-                            for site in sites]
-    return long_template.render(target=target_info,
-                                note_time=dtime,
-                                site_reports=site_reports,
-                                actions_taken=actions_taken,
-                                dt_style=datetime_format_long)
-
 #-----------------------------------------------------------------
-## Context creation routines:
-
 class TargetStatusKeys():
-    """A namespaced set of dict keys for site report contexts"""
+    """A namespaced set of dict keys for visibility reports"""
     site_lst = 'site_lst'
     type = 'type'
     visible_now = 'visible_now'
@@ -43,8 +17,11 @@ class TargetStatusKeys():
     rise_time = 'rise_time'
     set_time = 'set_time'
 
-def site_report(eq_posn, obs_site, current_time):
-    """Returns a dict populated with relevant TargetStatusKeys."""
+def visibility(eq_posn, obs_site, current_time):
+    """Get basic information on target visibility for a given site.
+
+    Returns a dict populated with relevant TargetStatusKeys.
+    """
     keys = TargetStatusKeys
     assert isinstance(obs_site, astropysics.obstools.Site)
     #Get times:
