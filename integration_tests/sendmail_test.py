@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from pysovo.comms import email
-from pysovo import contacts
+from pysovo.local import contacts
 
 def main():
     account = email.load_account_settings_from_file()

@@ -5,7 +5,7 @@ import voeparse
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-from pysovo import contacts
+from pysovo.local import contacts, default_email_account
 from pysovo.formatting import format_datetime
 import pysovo as ps
 import ami
@@ -62,7 +62,7 @@ def swift_bat_grb_logic(v):
                       action='QUEUE',
                       requester=contacts['ami']['requester'],
                       comment=comment)
-        ps.comms.email.send_email(account=ps.default_email_account,
+        ps.comms.email.send_email(account=default_email_account,
                                 recipient_addresses=contacts['ami']['email'],
                                 subject=ami.request_email_subject,
                                 body_text=ami_request)
@@ -74,7 +74,7 @@ def swift_bat_grb_logic(v):
                                 active_sites,
                                 now,
                                 actions_taken)
-    ps.comms.email.send_email(ps.default_email_account,
+    ps.comms.email.send_email(default_email_account,
                         [p['email'] for p in notify_contacts],
                         notification_email_prefix + target_name,
                         notify_msg)
