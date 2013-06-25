@@ -20,6 +20,8 @@ def main():
     ar.voevent_logic(test_packet)
     ##Now test one with null follow-up:
     ar.voevent_logic(ar.voeparse.load(datapaths.swift_bat_grb_low_dec))
+    ##Now test one with bad star tracking:
+    ar.voevent_logic(ar.voeparse.load(datapaths.swift_bat_grb_lost_lock))
 
 if __name__ == "__main__":
     main()

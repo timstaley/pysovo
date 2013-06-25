@@ -6,8 +6,8 @@ import voeparse
 def listify(x):
     """
     Returns [x] if x is not already a list.
-    
-    Used to make functions accept either scalar or array inputs - 
+
+    Used to make functions accept either scalar or array inputs -
     simply `listify` a variable to make sure it's in list format.
     """
     if (not isinstance(x, basestring)) and isinstance(x, Sequence):
@@ -36,6 +36,27 @@ def pull_swift_bat_id(voevent):
     alert_id = voevent.attrib['ivorn'][len('ivo://nasa.gsfc.gcn/SWIFT#BAT_GRB_Pos_'):]
     alert_id_short = alert_id.split('-')[0]
     return alert_id, alert_id_short
+
+def swift_bool(bstring):
+    if bstring == 'true':
+        return True
+    elif bstring == 'false':
+        return False
+    else:
+        raise ValueError("This string does not appear to be a SWIFT VOEvent "
+                          "boolean: %s" % bstring)
+
+def reject_swift_bat_trigger(voevent, position):
+    """Returns None if all ok, otherwise returns reason for rejection string."""
+    params = voeparse.pull_params(voevent)
+    dec_limit = 0.0
+    if position.dec.degrees < dec_limit:
+        return "Target below declination limit of %s degrees" % dec_limit
+    st_lost = swift_bool(params["Misc_Flags"]["ImTrig_during_ST_LoL"]['value'])
+    if st_lost:
+        return "Alert occurred while Swift star-tracker had lost lock."
+    return None
+
 
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys, os
 import datetime, pytz
 import voeparse
@@ -54,8 +54,9 @@ def swift_bat_grb_logic(v):
     target_name = 'SWIFT_' + alert_id_short
     comment = 'Automated SWIFT ID ' + alert_id
 
-    if posn.dec.degrees > -10.0:
-        duration = datetime.timedelta(hours=1)
+    reject_reason = ps.utils.reject_swift_bat_trigger(v, posn)
+    if reject_reason is None:
+        duration = datetime.timedelta(hours=3)
 
         ami_request = ami.request_email(posn, target_name, duration,
                       timing='ASAP',
@@ -68,9 +69,14 @@ def swift_bat_grb_logic(v):
                                 body_text=ami_request)
 
         actions_taken.append('Observation requested from AMI.')
-
+    else:
+        actions_taken.append('Alert ignored: ' + reject_reason)
+    isotime = voeparse.pull_isotime(v)
+    isotime = datetime.datetime.strptime(isotime, "%Y-%m-%dT%H:%M:%S.%f")
     notify_msg = generate_report_text(
-                                {'position': posn, 'description': 'Swift GRB'},
+                                {'position': posn,
+                                 'description': 'Swift GRB',
+                                 'isotime':isotime},
                                 active_sites,
                                 now,
                                 actions_taken)

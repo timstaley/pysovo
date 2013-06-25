@@ -122,7 +122,7 @@ xsi:schemaLocation="http://www.ivoa.net/xml/VOEvent/v2.0 http://www.ivoa.net/xml
                         <Name2>Dec</Name2>
                         <Value2>
                             <C1>74.741200</C1>
-                            <C2>-9.313700</C2>
+                            <C2>5.313700</C2>
                         </Value2>
                         <Error2Radius>0.050000</Error2Radius>
                     </Position2D>

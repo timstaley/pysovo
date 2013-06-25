@@ -1,6 +1,7 @@
-At {{ note_time|datetime(dt_style) }} a {{ target.description }} was noted,
-at sky position:
+At {{ note_time|datetime(dt_style) }} a {{ target.description }} notice was received. Details are as follows:
 {{ target.position }}
+(Decimal: {{ target.position.ra.degrees }},  {{ target.position.dec.degrees }})
+Trigger time: {{ target.isotime|datetime(dt_style) }}
 
 {% if site_reports %}
 =============
