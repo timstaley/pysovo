@@ -15,7 +15,8 @@ from jinja2 import Environment, PackageLoader
 #-------------------------------------------------------------------------------
 notify_contacts = [contacts['tim'],
                    contacts['rob'],
-                   contacts['rene'], ]
+                   contacts['rene'],
+                   contacts['gemma'], ]
 
 notification_email_prefix = "[4 Pi Sky] "
 
