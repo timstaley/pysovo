@@ -49,7 +49,7 @@ def swift_bool(bstring):
 def reject_swift_bat_trigger(voevent, position):
     """Returns None if all ok, otherwise returns reason for rejection string."""
     params = voeparse.pull_params(voevent)
-    dec_limit = 0.0
+    dec_limit = 15.0
     if position.dec.degrees < dec_limit:
         return "Target below declination limit of %s degrees" % dec_limit
     st_lost = swift_bool(params["Misc_Flags"]["ImTrig_during_ST_LoL"]['value'])
