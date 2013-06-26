@@ -57,7 +57,7 @@ def swift_bat_grb_logic(v):
 
     reject_reason = ps.utils.reject_swift_bat_trigger(v, posn)
     if reject_reason is None:
-        duration = datetime.timedelta(hours=3)
+        duration = datetime.timedelta(hours=2.5)
 
         ami_request = ami.request_email(posn, target_name, duration,
                       timing='ASAP',
