@@ -1,7 +1,17 @@
 At {{ note_time|datetime(dt_style) }} a {{ target.description }} notice was received. Details are as follows:
+ID: SWIFT {{ target.id }}
 {{ target.position }}
 (Decimal: {{ target.position.ra.degrees }},  {{ target.position.dec.degrees }})
 Trigger time: {{ target.isotime|datetime(dt_style) }}
+
+==============
+Actions taken:
+==============
+{% for action in actions_taken %}
+{{ action }}
+{% else %}
+No follow-ups requested.
+{% endfor %}
 
 {% if site_reports %}
 =============
@@ -30,14 +40,6 @@ Transit alt-az position: {{vis.transit_position}}
 {% endfor %}
 All times refer to UTC.
 
-==============
-Actions taken:
-==============
-{% for action in actions_taken %}
-{{ action }}
-{% else %}
-No follow-ups requested.
-{% endfor %}
 
 
 Best regards,
