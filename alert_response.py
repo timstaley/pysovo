@@ -55,7 +55,7 @@ def swift_bat_grb_logic(v):
     target_name = 'SWIFT_' + alert_id_short
     comment = 'Automated SWIFT ID ' + alert_id
 
-    reject_reason = ps.utils.reject_swift_bat_trigger(v, posn)
+    reject_reason = ps.filters.reject_swift_bat_trigger(v, posn)
     if reject_reason is None:
         duration = datetime.timedelta(hours=2.)
 

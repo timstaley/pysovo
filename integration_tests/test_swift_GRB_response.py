@@ -14,14 +14,12 @@ ar.contacts['ami']['email'] = 'DUMMY' + ar.contacts['ami']['email'] #Do NOT emai
 ar.default_archive_root = "./"
 
 def main():
-    test_packet = ar.voeparse.load(datapaths.swift_bat_grb_pos_v2)
-    print "Packet loaded, ivorn", test_packet.attrib['ivorn']
-    print "Logic go!"
-    ar.voevent_logic(test_packet)
+    ar.voevent_logic(ar.voeparse.load(datapaths.swift_bat_grb_pos_v2))
     ##Now test one with null follow-up:
     ar.voevent_logic(ar.voeparse.load(datapaths.swift_bat_grb_low_dec))
     ##Now test one with bad star tracking:
     ar.voevent_logic(ar.voeparse.load(datapaths.swift_bat_grb_lost_lock))
+    ar.voevent_logic(ar.voeparse.load(datapaths.swift_bat_known_source))
 
 if __name__ == "__main__":
     main()

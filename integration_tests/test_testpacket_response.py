@@ -12,12 +12,12 @@ ar.ps.comms.email.send_email = ar.ps.comms.email.dummy_email_send_function
 
 def main():
     ar.default_archive_root = "./"
-    test_packet = voeparse.Voevent(stream='voevent.astro.soton/TEST',
+    reject_packet = voeparse.Voevent(stream='voevent.astro.soton/TEST',
                                    stream_id='42',
                                    role=voeparse.roles.test)
-    print "Packet loaded, ivorn", test_packet.attrib['ivorn']
+    print "Packet loaded, ivorn", reject_packet.attrib['ivorn']
     print "Logic go!"
-    ar.voevent_logic(test_packet)
+    ar.voevent_logic(reject_packet)
 
 if __name__ == "__main__":
     main()
