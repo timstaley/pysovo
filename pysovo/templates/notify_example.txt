@@ -1,8 +1,11 @@
-At {{ note_time|datetime(dt_style) }} a {{ target.description }} notice was received. Details are as follows:
-ID: SWIFT {{ target.id }}
-{{ target.position }}
-(Decimal: {{ target.position.ra.degrees }},  {{ target.position.dec.degrees }})
-Trigger time: {{ target.isotime|datetime(dt_style) }}
+At {{ report_timestamp|datetime(dt_style) }} an alert of type:
+'{{ alert.description }}' 
+was received. Details are as follows:
+ID: {{ alert.id }}
+Inferred name: {{ alert.inferred_name }}
+Co-ords: {{ alert.position }}
+(Decimal: {{ alert.position.ra.degrees }},  {{ alert.position.dec.degrees }})
+Trigger time: {{ alert.isotime|datetime(dt_style) }}
 
 ==============
 Actions taken:

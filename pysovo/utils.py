@@ -1,3 +1,7 @@
+"""
+Misc. convenience routines.
+"""
+
 import os
 from collections import Sequence
 from astropysics.coords.coordsys import FK5Coordinates
@@ -29,23 +33,6 @@ def convert_voe_coords_to_fk5(c):
         raise ValueError("Unrecognised Coords type: %s, %s" % (c.system, c.units))
     return FK5Coordinates(ra=c.ra, dec=c.dec,
                           raerror=c.err, decerror=c.err)
-
-def pull_swift_bat_id(voevent):
-    if voevent.attrib['ivorn'].find("ivo://nasa.gsfc.gcn/SWIFT#BAT_GRB_Pos") != 0:
-        return None
-    alert_id = voevent.attrib['ivorn'][len('ivo://nasa.gsfc.gcn/SWIFT#BAT_GRB_Pos_'):]
-    alert_id_short = alert_id.split('-')[0]
-    return alert_id, alert_id_short
-
-def swift_bool(bstring):
-    if bstring == 'true':
-        return True
-    elif bstring == 'false':
-        return False
-    else:
-        raise ValueError("This string does not appear to be a SWIFT VOEvent "
-                          "boolean: %s" % bstring)
-
 
 
 

@@ -2,30 +2,17 @@ from unittest import TestCase
 from astropysics.coords.coordsys import FK5Coordinates
 import voeparse
 from pysovo.utils import convert_voe_coords_to_fk5
-from pysovo.filters import reject_swift_bat_trigger
+import pysovo.filters as filters
 from pysovo.tests.resources import datapaths
 
+class TestAmiTargetFilters(TestCase):
+    def test_low_dec(self):
+        good_src = voeparse.load(datapaths.swift_bat_grb_pos_v2)
+        bad_src = voeparse.load(datapaths.swift_bat_grb_low_dec)
 
-def reject_packet(pkt):
-    v = voeparse.load(pkt)
-    voe_coords = voeparse.pull_astro_coords(v)
-    fk5 = convert_voe_coords_to_fk5(voe_coords)
-    reject = reject_swift_bat_trigger(v, fk5)
-    return reject
-
-class TestSwiftGrbFilters(TestCase):
-    def test_good_target(self):
-        reject = reject_packet(datapaths.swift_bat_grb_pos_v2)
-        self.assertEqual(reject, None)
-
-    def test_low_dec_filter(self):
-        reject = reject_packet(datapaths.swift_bat_grb_low_dec)
-        self.assertEqual(bool(reject), True)
-
-    def test_lost_lock_filter(self):
-        reject = reject_packet(datapaths.swift_bat_grb_lost_lock)
-        self.assertEqual(bool(reject), True)
-
-    def test_known_source_filter(self):
-        reject = reject_packet(datapaths.swift_bat_known_source)
-        self.assertEqual(bool(reject), True)
+        good_fk5 = convert_voe_coords_to_fk5(
+                                     voeparse.pull_astro_coords(good_src))
+        bad_fk5 = convert_voe_coords_to_fk5(
+                                     voeparse.pull_astro_coords(bad_src))
+        self.assertIsNone(filters.ami.reject(good_fk5))
+        self.assertIsNotNone(filters.ami.reject(bad_fk5))

@@ -11,4 +11,6 @@ default_email_config_file = os.path.join(config_folder, "email_acc")
 import pysovo.comms
 import pysovo.ephem
 import pysovo.filters
+import pysovo.formatting
+import pysovo.triggers
 import pysovo.utils

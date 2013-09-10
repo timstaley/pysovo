@@ -6,9 +6,9 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 from pysovo.local import contacts, default_email_account
-from pysovo.formatting import format_datetime
+from pysovo.triggers import swift
 import pysovo as ps
-import ami
+import amiobs
 
 from jinja2 import Environment, PackageLoader
 
@@ -22,14 +22,14 @@ notification_email_prefix = "[4 Pi Sky] "
 
 default_archive_root = os.environ["HOME"] + "/comet/voe_archive"
 
-active_sites = [ami.site]
-
+active_sites = [amiobs.site]
 
 env = Environment(loader=PackageLoader('pysovo', 'templates'),
                   trim_blocks=True)
-env.filters['datetime'] = format_datetime
+env.filters['datetime'] = ps.formatting.format_datetime
 
 #-------------------------------------------------------------------------------
+
 def main():
     s = sys.stdin.read()
     v = voeparse.loads(s)
@@ -38,56 +38,64 @@ def main():
 
 def voevent_logic(v):
     #SWIFT BAT GRB alert:
-    if v.attrib['ivorn'].find("ivo://nasa.gsfc.gcn/SWIFT#BAT_GRB_Pos") == 0:
+    if swift.filters.is_bat_grb_pkt(v):
         swift_bat_grb_logic(v)
 
     if v.attrib['ivorn'].find("ivo://voevent.astro.soton/TEST#") == 0:
         test_logic(v)
+
     archive_voevent(v, rootdir=default_archive_root)
 
 
-
 def swift_bat_grb_logic(v):
-    now = datetime.datetime.now(pytz.utc)
-    posn = ps.utils.convert_voe_coords_to_fk5(voeparse.pull_astro_coords(v))
-    actions_taken = []
-    alert_id, alert_id_short = ps.utils.pull_swift_bat_id(v)
-    target_name = 'SWIFT_' + alert_id_short
-    comment = 'Automated SWIFT ID ' + alert_id
-
-    reject_reason = ps.filters.reject_swift_bat_trigger(v, posn)
-    if reject_reason is None:
-        duration = datetime.timedelta(hours=2.)
-
-        ami_request = ami.request_email(posn, target_name, duration,
-                      timing='ASAP',
-                      action='QUEUE',
-                      requester=contacts['ami']['requester'],
-                      comment=comment)
-        ps.comms.email.send_email(account=default_email_account,
-                                recipient_addresses=contacts['ami']['email'],
-                                subject=ami.request_email_subject,
-                                body_text=ami_request)
-
-        actions_taken.append('Observation requested from AMI.')
+    actions_taken=[]
+    alert = swift.BatGrb(v)
+    alert_rejection = alert.reject()
+    if alert_rejection is None:
+        ami_reject = ps.filters.ami.reject(alert.position)
+        if ami_reject is None:
+            actions_taken.append('Observation requested from AMI.')
+            trigger_ami_swift_grb_alert(alert)
+        else:
+            actions_taken.append('Target rejected by ami: ' + ami_reject)
     else:
-        actions_taken.append('Alert ignored: ' + reject_reason)
-    isotime = voeparse.pull_isotime(v)
-    isotime = datetime.datetime.strptime(isotime, "%Y-%m-%dT%H:%M:%S.%f")
+        actions_taken.append('Alert ignored: ' + alert_rejection)
+
+    send_alert_report(alert, actions_taken)
+
+
+
+def trigger_ami_swift_grb_alert(alert):
+    assert isinstance(alert, swift.BatGrb)
+    target_name = alert.id
+    comment = alert.id + " / " + alert.inferred_name
+    duration = datetime.timedelta(hours=2.)
+
+    ami_request = amiobs.request_email(
+                   target_coords=alert.position,
+                   target_name=target_name,
+                   duration=duration,
+                  timing='ASAP',
+                  action='QUEUE',
+                  requester=contacts['ami']['requester'],
+                  comment=comment)
+
+    ps.comms.email.send_email(account=default_email_account,
+                            recipient_addresses=contacts['ami']['email'],
+                            subject=amiobs.request_email_subject,
+                            body_text=ami_request)
+
+def send_alert_report(alert, actions_taken):
+    assert isinstance(alert, swift.BatGrb)
     notify_msg = generate_report_text(
-                                {'position': posn,
-                                 'description': 'Swift GRB',
-                                 'id':alert_id_short,
-                                 'isotime':isotime},
+                                alert,
                                 active_sites,
-                                now,
                                 actions_taken)
+    subject = alert.id + ' / ' + alert.inferred_name
     ps.comms.email.send_email(default_email_account,
                         [p['email'] for p in notify_contacts],
-                        notification_email_prefix + target_name,
+                        notification_email_prefix + subject,
                         notify_msg)
-
-
 
 def test_logic(v):
     now = datetime.datetime.now(pytz.utc)
@@ -106,13 +114,15 @@ def archive_voevent(v, rootdir):
     with open(fullpath, 'w') as f:
         voeparse.dump(v, f)
 
-def generate_report_text(target_info, sites, dtime, actions_taken):
-    posn = target_info['position']
-    site_reports = [(site, ps.ephem.visibility(posn, site, dtime))
+def generate_report_text(alert, sites, actions_taken,
+                         report_timestamp=None):
+    if report_timestamp is None:
+        report_timestamp = datetime.datetime.now(pytz.utc)
+    site_reports = [(site, ps.ephem.visibility(alert.position, site, report_timestamp))
                             for site in sites]
     notification_template = env.get_template('notify_example.txt')
-    msg = notification_template.render(target=target_info,
-                                note_time=dtime,
+    msg = notification_template.render(alert=alert,
+                                report_timestamp=report_timestamp,
                                 site_reports=site_reports,
                                 actions_taken=actions_taken,
                                 dt_style=ps.formatting.datetime_format_long)
