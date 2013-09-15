@@ -5,6 +5,13 @@ pysovo
 Basic tools to do things with VOEvents. 
 (e.g. pick out certain events, then send email alerts or new VOEvents, etc.)
 
+pysovo is not really meant as a general release, it is very much tailored
+to our specific needs. However, it may serve as a reference example to others
+wishing to get started with VOEvents. 
+(And if you want to send custom formatted emails, it's your lucky day.)
+
+For an example of how pysovo is being applied, see
+`Staley et al (2012) <http://ukads.nottingham.ac.uk/abs/2012arXiv1211.3115S>`_.
 
 Installation:
 -------------
