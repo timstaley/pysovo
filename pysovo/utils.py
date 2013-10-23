@@ -34,7 +34,8 @@ def convert_voe_coords_to_fk5(c):
     return FK5Coordinates(ra=c.ra, dec=c.dec,
                           raerror=c.err, decerror=c.err)
 
-
+def namedtuple_to_dict(nt):
+    return {key:nt[i] for i, key in enumerate(nt._fields)}
 
 
 
