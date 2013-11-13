@@ -22,29 +22,30 @@ def create_ami_followup_notification(original_alert_voevent, stream_id,
                                 superseded_ivorns=None):
 
     orig = original_alert_voevent
-    note = create_skeleton_4pisky_voevent('AMI-REQUEST',
+    voevent = create_skeleton_4pisky_voevent('AMI-REQUEST',
                                        stream_id, role=vp.roles.utility)
-    vp.add_how(note, descriptions="AMI Large Array, Cambridge",
+    vp.add_how(voevent, descriptions="AMI Large Array, Cambridge",
                references=vp.Reference("http://www.mrao.cam.ac.uk/facilities/ami/ami-technical-information/"),
                )
-    note.Why = copy(orig.Why)
-    vp.add_citations(note, citations=vp.Citation(ivorn=orig.attrib['ivorn'],
+    voevent.Why = copy(orig.Why)
+    vp.add_citations(voevent, citations=vp.Citation(ivorn=orig.attrib['ivorn'],
                               cite_type=vp.definitions.cite_types.followup))
-    note.What.Description = "A request for AMI-LA follow-up has been made."
+    voevent.What.Description = "A request for AMI-LA follow-up has been made."
     
     request_params = [vp.Param(key, val)
                       for key, val in request_status.iteritems()]
-    g = vp.Group(request_params, name='request')
-    note.What.append(g)
+    g = vp.Group(request_params, name='ami-request')
+    voevent.What.append(g)
     
-    coords = vp.pull_astro_coords(orig)
-    target_posn = pysovo.utils.namedtuple_to_dict(coords)
-    target_pars = [vp.Param(key, val)
-                      for key, val in target_posn.iteritems()]
-    g = vp.Group(target_pars, name='target')
-    note.What.append(g)
+    # Also copy target location into WhereWhen
+    voevent.WhereWhen = copy(orig.WhereWhen)
+    # But the time marker should refer to the AMI observation:
+    # (We are already citing the original Swift alert)
+    ac = voevent.WhereWhen.ObsDataLocation.ObservationLocation.AstroCoords
+    del ac.Time
+    voevent.WhereWhen.Description = "Target co-ords from original Swift BAT alert"
 
-    return note
+    return voevent
     
 
 
