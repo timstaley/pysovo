@@ -4,57 +4,23 @@
 
 from __future__ import absolute_import
 import logging
-
-# Twisted
-from twisted.python import usage
-from twisted.internet import reactor
-from twisted.internet.endpoints import clientFromString
-
-# VOEvent transport protocol
-from comet.tcp.protocol import VOEventSenderFactory
-
-# Encapsulation of event
-from comet.log import log
-from comet.utility.xml import xml_document
-import lxml.etree as ElementTree
-
+import subprocess
 import voeparse
-
+import tempfile
 logger = logging.getLogger(__name__)
-
-
-class OneShotSender(VOEventSenderFactory):
-    """
-    A factory that shuts down the reactor when we lose the connection to the
-    remote host. That either means that our event has been sent or that we
-    failed.
-    """
-    def clientConnectionLost(self, connector, reason):
-        reactor.stop()
-
-    def clientConnectionFailed(self, connector, reason):
-        logger.warning("Connection failed")
-        reactor.stop()
-
-
 def send_voevent(voevent, host='localhost', port=8098):
-    voevent = xml_document(voeparse.dumps(voevent))
-
+    tf = tempfile.TemporaryFile()
+    voeparse.dump(voevent, tf)
+    tf.seek(0)
+    # tf.close()
     try:
-        factory = OneShotSender(voevent)
-    except IOError:
-        logger.warning("Reading XML document failed")
-        reactor.callWhenRunning(reactor.stop)
-    except ElementTree.Error:
-        logger.warning("Could not parse event text")
-        reactor.callWhenRunning(reactor.stop)
-    else:
-        reactor.connectTCP(host, port, factory)
+        cmd = ['comet-sendvo']
+        cmd.append('--host=' + host)
+        cmd.append('--port=' + str(port))
+        subprocess.check_call(cmd, stdin=tf)
+    except subprocess.CalledProcessError as e:
+        logger.error("send_voevent failed")
+        raise e
 
-    reactor.run()
 
-    # If our factory didn't get an acknowledgement of receipt, we'll raise:
-    if locals().has_key("factory") and factory.ack:
-        return
-    else:
-        raise RuntimeError("send voevent failed")
+    

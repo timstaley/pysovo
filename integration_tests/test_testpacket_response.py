@@ -13,7 +13,7 @@ ar.ps.comms.email.send_email = ar.ps.comms.email.dummy_email_send_function
 def main():
     ar.default_archive_root = "./"
     reject_packet = voeparse.Voevent(stream='voevent.astro.soton/TEST',
-                                   stream_id='42',
+                                   stream_id=42,
                                    role=voeparse.roles.test)
     print "Packet loaded, ivorn", reject_packet.attrib['ivorn']
     ar.voevent_logic(reject_packet)
