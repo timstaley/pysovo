@@ -7,8 +7,10 @@ from pysovo.tests.resources import datapaths
 
 class TestAmiTargetFilters(TestCase):
     def test_low_dec(self):
-        good_src = voeparse.load(datapaths.swift_bat_grb_pos_v2)
-        bad_src = voeparse.load(datapaths.swift_bat_grb_low_dec)
+        with open(datapaths.swift_bat_grb_pos_v2) as f:
+            good_src = voeparse.load(f)
+        with open(datapaths.swift_bat_grb_low_dec) as f:
+            bad_src = voeparse.load(f)
 
         good_fk5 = convert_voe_coords_to_fk5(
                                      voeparse.pull_astro_coords(good_src))

@@ -16,7 +16,6 @@ def main():
                                    stream_id='42',
                                    role=voeparse.roles.test)
     print "Packet loaded, ivorn", reject_packet.attrib['ivorn']
-    print "Logic go!"
     ar.voevent_logic(reject_packet)
 
 if __name__ == "__main__":

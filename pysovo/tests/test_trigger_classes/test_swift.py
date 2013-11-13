@@ -8,7 +8,8 @@ from pysovo.tests.resources import datapaths
 class TestSwiftGrbFilters(TestCase):
     def setUp(self):
         def reject_packet(pkt):
-            v = voeparse.load(pkt)
+            with open(pkt) as f:
+                v = voeparse.load(f)
             alert = swift.BatGrb(v)
             return alert.reject()
         self.reject = reject_packet
@@ -24,4 +25,5 @@ class TestSwiftGrbFilters(TestCase):
 
 class TestBatGrbClass(TestCase):
     def test_init(self):
-        trigger = swift.BatGrb(voeparse.load(datapaths.swift_bat_grb_pos_v2))
+        with open(datapaths.swift_bat_grb_pos_v2) as f:
+            trigger = swift.BatGrb(voeparse.load(f))

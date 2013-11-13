@@ -100,10 +100,10 @@ def send_alert_report(alert, actions_taken):
 def test_logic(v):
     now = datetime.datetime.now(pytz.utc)
     msg = "Test packet received at time %s\n" % now.strftime("%y-%m-%d %H:%M:%S")
-    ps.comms.email.send_email(ps.default_email_account,
-                            contacts['test']['email'],
-                            'Test packet received',
-                            msg)
+    ps.comms.email.send_email(account=default_email_account,
+                            recipient_addresses=contacts['test']['email'],
+                            subject='Test packet received',
+                            body_text=msg)
     archive_voevent(v, rootdir=default_archive_root)
 
 def archive_voevent(v, rootdir):
