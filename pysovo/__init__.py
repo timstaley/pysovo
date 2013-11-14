@@ -14,3 +14,4 @@ import pysovo.filters
 import pysovo.formatting
 import pysovo.triggers
 import pysovo.utils
+import pysovo.voevent

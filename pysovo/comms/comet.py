@@ -7,7 +7,9 @@ import logging
 import subprocess
 import voeparse
 import tempfile
+import textwrap
 logger = logging.getLogger(__name__)
+import pysovo.utils
 def send_voevent(voevent, host='localhost', port=8098):
     tf = tempfile.TemporaryFile()
     voeparse.dump(voevent, tf)
@@ -21,6 +23,18 @@ def send_voevent(voevent, host='localhost', port=8098):
     except subprocess.CalledProcessError as e:
         logger.error("send_voevent failed")
         raise e
-
-
     
+    
+def dummy_send_to_comet_stub(voevent, host='localhost', port=8098):
+    tf = tempfile.NamedTemporaryFile(delete=False)
+    print textwrap.dedent("""\
+    *************
+     Would have sent a VOEvent to node: {host}:{port};
+    Copy of XML dumped to: {fname}
+    *************
+    """.format(host=host, port=port, fname=tf.name))
+    voeparse.dump(voevent, tf)
+    tf.close()
+    # raise subprocess.CalledProcessError(1, 'dummyvosend')
+
+

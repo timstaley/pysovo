@@ -9,26 +9,27 @@ import pysovo.utils
 def create_skeleton_4pisky_voevent(substream, stream_id, role=vp.roles.test):
     v = vp.Voevent(stream='voevent.phys.soton.ac.uk/' + substream,
                stream_id=stream_id, role=role)
-    vp.set_who(v, date=datetime.datetime.now(),
+    vp.set_who(v, date=datetime.datetime.utcnow(),
                author_ivorn=None)
-    vp.set_author(v, title="4PiSky",
+    vp.set_author(v,
                   shortName="4PiSky",
-                  contactName="Tim Staley"
+                  contactName="Tim Staley",
+                  contactEmail="tim.staley@astro.ox.ac.uk"
                   )
     return v
 
-def create_ami_followup_notification(original_alert_voevent, stream_id,
+def create_ami_followup_notification(alert, stream_id,
                                 request_status,
                                 superseded_ivorns=None):
 
-    orig = original_alert_voevent
+    orig_pkt = alert.voevent
     voevent = create_skeleton_4pisky_voevent('AMI-REQUEST',
                                        stream_id, role=vp.roles.utility)
     vp.add_how(voevent, descriptions="AMI Large Array, Cambridge",
                references=vp.Reference("http://www.mrao.cam.ac.uk/facilities/ami/ami-technical-information/"),
                )
-    voevent.Why = copy(orig.Why)
-    vp.add_citations(voevent, citations=vp.Citation(ivorn=orig.attrib['ivorn'],
+    voevent.Why = copy(orig_pkt.Why)
+    vp.add_citations(voevent, citations=vp.Citation(ivorn=orig_pkt.attrib['ivorn'],
                               cite_type=vp.definitions.cite_types.followup))
     voevent.What.Description = "A request for AMI-LA follow-up has been made."
     
@@ -38,7 +39,7 @@ def create_ami_followup_notification(original_alert_voevent, stream_id,
     voevent.What.append(g)
     
     # Also copy target location into WhereWhen
-    voevent.WhereWhen = copy(orig.WhereWhen)
+    voevent.WhereWhen = copy(orig_pkt.WhereWhen)
     # But the time marker should refer to the AMI observation:
     # (We are already citing the original Swift alert)
     ac = voevent.WhereWhen.ObsDataLocation.ObservationLocation.AstroCoords

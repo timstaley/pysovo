@@ -3,8 +3,10 @@ import sys, os
 import datetime, pytz
 import voeparse
 import logging
+import subprocess
+import copy
 logging.basicConfig(level=logging.DEBUG)
-
+logger = logging.getLogger(__name__)
 from pysovo.local import contacts, default_email_account
 from pysovo.triggers import swift
 import pysovo as ps
@@ -54,8 +56,21 @@ def swift_bat_grb_logic(v):
     if alert_rejection is None:
         ami_reject = ps.filters.ami.reject(alert.position)
         if ami_reject is None:
-            actions_taken.append('Observation requested from AMI.')
-            trigger_ami_swift_grb_alert(alert)
+            try:
+                trigger_ami_swift_grb_alert(alert)
+                actions_taken.append('Observation requested from AMI.')
+                try:
+                    send_initial_ami_alert_vo_notification(alert)
+                    actions_taken.append('AMI request notified to VOEvent network.')
+                except subprocess.CalledProcessError as e:
+                    emsg = '***Notification to VOEvent network failed.***'
+                    logger.warn(emsg)
+                    actions_taken.append(emsg)
+            except Exception as e:
+                emsg = 'Observation request failed.'
+                actions_taken.append(emsg)
+                logger.error(emsg)
+                raise
         else:
             actions_taken.append('Target rejected by ami: ' + ami_reject)
     else:
@@ -85,6 +100,19 @@ def trigger_ami_swift_grb_alert(alert):
                             subject=amiobs.request_email_subject,
                             body_text=ami_request)
 
+def send_initial_ami_alert_vo_notification(alert):
+    notification_timestamp = datetime.datetime.utcnow()
+    request_status = {'sent_time':notification_timestamp,
+                  'acknowledged':False,
+                  }
+    stream_id = notification_timestamp.strftime(ps.formatting.datetime_format_short)
+    v = ps.voevent.create_ami_followup_notification(alert,
+                                             stream_id=stream_id,
+                                             request_status=request_status)
+    ps.comms.comet.send_voevent(v, contacts['vobroker']['host'],
+                                contacts['vobroker']['port'])
+
+
 def send_alert_report(alert, actions_taken):
     assert isinstance(alert, swift.BatGrb)
     notify_msg = generate_report_text(
@@ -100,9 +128,16 @@ def send_alert_report(alert, actions_taken):
 def test_logic(v):
     now = datetime.datetime.now(pytz.utc)
     msg = "Test packet received at time %s\n" % now.strftime("%y-%m-%d %H:%M:%S")
+    stream_id = v.attrib['ivorn'].partition('#')[-1]
+    response = voeparse.Voevent(stream='voevent.astro.soton/TESTRESPONSE',
+                                   stream_id=stream_id,
+                                   role=voeparse.roles.test)
+    ps.comms.comet.send_voevent(response, contacts['vobroker']['host'],
+                                contacts['vobroker']['port'])
+
     ps.comms.email.send_email(account=default_email_account,
                             recipient_addresses=contacts['test']['email'],
-                            subject='Test packet received',
+                            subject='[VO-TEST] Test packet received',
                             body_text=msg)
     archive_voevent(v, rootdir=default_archive_root)
 

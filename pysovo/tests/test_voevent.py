@@ -9,7 +9,7 @@ class TestFollowupVoevent(TestCase):
         with open(datapaths.swift_bat_grb_pos_v2) as f:
             swift_alert = vp.load(f)
 
-        request_status = {'sent_time':datetime.datetime.now(),
+        request_status = {'sent_time':datetime.datetime.utcnow(),
                           'acknowledged':False,
                           }
 

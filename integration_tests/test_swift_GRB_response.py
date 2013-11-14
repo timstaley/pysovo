@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+from __future__ import absolute_import
 
 #Minimal imports here - ensures proper testing of alert_response.
 #(If not careful you might temporarily fix a broken import - which then remains broken)
@@ -8,9 +8,10 @@ import alert_response as ar
 import voeparse
 ##We bind the email sender to a dummy function:
 ar.ps.comms.email.send_email = ar.ps.comms.email.dummy_email_send_function
+ar.ps.comms.comet.send_voevent = ar.ps.comms.comet.dummy_send_to_comet_stub
 ar.notification_email_prefix = "[TEST] " + ar.notification_email_prefix
 ar.notify_contacts = [ ar.contacts['test']  ]  # Only notify test contacts
-ar.contacts['ami']['email'] = 'DUMMY' + ar.contacts['ami']['email'] #Do NOT email AMI
+ar.contacts['ami']['email'] = 'blocked!' + ar.contacts['ami']['email']  # Do NOT email AMI
 ar.default_archive_root = "./"
 
 def main():
