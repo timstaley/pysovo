@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 Pings a live broker / alert_response setup with test packet.
 This provides a means of testing a live system in a safe and unobtrusive manner.

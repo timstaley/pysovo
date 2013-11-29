@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 from pysovo.comms import email
 from pysovo.local import contacts

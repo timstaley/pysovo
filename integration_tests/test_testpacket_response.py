@@ -1,5 +1,4 @@
-#!/usr/bin/python
-
+#!/usr/bin/env python
 
 #Minimal imports here - ensures proper testing of alert_response.
 #(If not careful you might temporarily fix a broken import - which then remains broken)

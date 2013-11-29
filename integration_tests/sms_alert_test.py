@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import pysovo as ps
 import pysovo.sms as sms
 
