@@ -131,7 +131,7 @@ def test_logic(v):
     stream_id = v.attrib['ivorn'].partition('#')[-1]
     response = voeparse.Voevent(stream='voevent.astro.soton/TESTRESPONSE',
                                    stream_id=stream_id,
-                                   role=voeparse.roles.test)
+                                   role=voeparse.definitions.roles.test)
     ps.comms.comet.send_voevent(response, contacts['vobroker']['host'],
                                 contacts['vobroker']['port'])
 

@@ -1,5 +1,6 @@
-voevent-parse>=0.5.0
-ami-observatory>=0.2.0
+comet>=1.1.0
+voevent-parse==0.6.0
+ami-observatory==0.2.0
 Astropysics
 scipy
 Jinja2

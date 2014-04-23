@@ -28,7 +28,7 @@ def ensure_dir(filename):
 
 def convert_voe_coords_to_fk5(c):
     """Unit-checked conversion from voeparse.Position2D -> astropysics FK5"""
-    if (c.system != voeparse.sky_coord_system.fk5
+    if (c.system != voeparse.definitions.sky_coord_system.fk5
         or c.units != 'deg'):
         raise ValueError("Unrecognised Coords type: %s, %s" % (c.system, c.units))
     return FK5Coordinates(ra=c.ra, dec=c.dec,

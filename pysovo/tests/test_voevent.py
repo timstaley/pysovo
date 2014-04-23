@@ -1,13 +1,15 @@
+from __future__ import absolute_import
 from unittest import TestCase
 import voeparse as vp
 from pysovo.tests.resources import datapaths
 import pysovo.voevent as vo_subs
+from pysovo.triggers.swift import BatGrb
 import datetime
 
 class TestFollowupVoevent(TestCase):
     def test_initial_case(self):
         with open(datapaths.swift_bat_grb_pos_v2) as f:
-            swift_alert = vp.load(f)
+            swift_alert = BatGrb(vp.load(f))
 
         request_status = {'sent_time':datetime.datetime.utcnow(),
                           'acknowledged':False,

@@ -17,7 +17,7 @@ def main():
     now = datetime.datetime.utcnow()
     test_packet = voeparse.Voevent(stream='voevent.astro.soton/TEST',
                                    stream_id=now.strftime(datetime_format_short),
-                                   role=voeparse.roles.test)
+                                   role=voeparse.definitions.roles.test)
     print "Packet loaded, ivorn", test_packet.attrib['ivorn']
     ar.voevent_logic(test_packet)
 
