@@ -1,7 +1,3 @@
-# largely transplanted from comet-sendvo script:
-# https://github.com/jdswinbank/Comet/blob/release-1.0/scripts/comet-sendvo
-# Should track updates.
-
 from __future__ import absolute_import
 import logging
 import subprocess
@@ -9,7 +5,7 @@ import voeparse
 import tempfile
 import textwrap
 logger = logging.getLogger(__name__)
-import pysovo.utils
+
 def send_voevent(voevent, host='localhost', port=8098):
     tf = tempfile.TemporaryFile()
     voeparse.dump(voevent, tf)

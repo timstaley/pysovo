@@ -22,7 +22,8 @@ notify_contacts = [contacts['tim'],
 
 notification_email_prefix = "[4 Pi Sky] "
 
-default_archive_root = os.environ["HOME"] + "/comet/voe_archive"
+default_archive_root = os.path.join(os.environ["HOME"],
+                                    "voevent-deploy","voe_archive")
 
 active_sites = [amiobs.site]
 
