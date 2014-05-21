@@ -69,12 +69,12 @@ class BatGrb:
         if filters.startracker_lost(pars):
             return "Alert occurred while Swift star-tracker had lost lock."
 
-        if not filters.grb_identified(pars):
-            if filters.tgt_in_ground_cat(pars) or filters.tgt_in_flight_cat(pars):
-                return "Not a GRB - target associated with known catalog source"
-            else:
-                return """Not identified as GRB, but not a known source.
-                        See packet for further details."""
+        # if not filters.grb_identified(pars):
+        #     if filters.tgt_in_ground_cat(pars) or filters.tgt_in_flight_cat(pars):
+        #         return "Not a GRB - target associated with known catalog source"
+        #     else:
+        #         return """Not identified as GRB, but not a known source.
+        #                 See packet for further details."""
         return None
 
     @staticmethod
