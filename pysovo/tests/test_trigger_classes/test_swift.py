@@ -21,7 +21,8 @@ class TestSwiftGrbFilters(TestCase):
         self.assertIsNotNone(self.reject(datapaths.swift_bat_grb_lost_lock))
 
     def test_known_source_filter(self):
-        self.assertIsNotNone(self.reject(datapaths.swift_bat_known_source))
+        # self.assertIsNotNone(self.reject(datapaths.swift_bat_known_source))
+        self.assertIsNone(self.reject(datapaths.swift_bat_known_source))
 
 class TestBatGrbClass(TestCase):
     def test_init(self):
