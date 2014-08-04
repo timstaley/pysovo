@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from unittest import TestCase
-import voeparse as vp
+import voeventparse as vp
 from pysovo.tests.resources import datapaths
 import pysovo.voevent as vo_subs
 from pysovo.triggers.swift import BatGrb

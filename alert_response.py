@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 import sys, os
 import datetime, pytz
-import voeparse
+import voeventparse
 import logging
 import subprocess
 import copy
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 from pysovo.local import contacts, default_email_account
+from pysovo.visibility import get_ephem
 from pysovo.triggers import swift
 import pysovo as ps
 import amiobs
@@ -15,14 +16,15 @@ import amiobs
 from jinja2 import Environment, PackageLoader
 
 #-------------------------------------------------------------------------------
-notify_contacts = [contacts['tim'],
+grb_contacts = [contacts['tim'],
                    contacts['rob'],
-                   contacts['rene'],
+                   contacts['kunal'],
                    contacts['gemma'], 
                    contacts['vik'],
                    contacts['liam'],
                    contacts['stuart']
                    ]
+
 
 notification_email_prefix = "[4 Pi Sky] "
 
@@ -32,14 +34,15 @@ default_archive_root = os.path.join(os.environ["HOME"],
 active_sites = [amiobs.site]
 
 env = Environment(loader=PackageLoader('pysovo', 'templates'),
-                  trim_blocks=True)
+                  trim_blocks=True,lstrip_blocks=True)
 env.filters['datetime'] = ps.formatting.format_datetime
+env.filters['rad_to_deg'] = ps.formatting.rad_to_deg
 
 #-------------------------------------------------------------------------------
 
 def main():
     s = sys.stdin.read()
-    v = voeparse.loads(s)
+    v = voeventparse.loads(s)
     voevent_logic(v)
     return 0
 
@@ -47,10 +50,8 @@ def voevent_logic(v):
     #SWIFT BAT GRB alert:
     if swift.filters.is_bat_grb_pkt(v):
         swift_bat_grb_logic(v)
-
     if v.attrib['ivorn'].find("ivo://voevent.astro.soton/TEST#") == 0:
         test_logic(v)
-
     archive_voevent(v, rootdir=default_archive_root)
 
 
@@ -81,7 +82,8 @@ def swift_bat_grb_logic(v):
     else:
         actions_taken.append('Alert ignored: ' + alert_rejection)
 
-    send_alert_report(alert, actions_taken)
+    send_alert_report(alert, actions_taken, grb_contacts)
+
 
 
 
@@ -105,6 +107,10 @@ def trigger_ami_swift_grb_alert(alert):
                             subject=amiobs.request_email_subject,
                             body_text=ami_request)
 
+
+
+
+
 def send_initial_ami_alert_vo_notification(alert):
     notification_timestamp = datetime.datetime.utcnow()
     request_status = {'sent_time':notification_timestamp,
@@ -118,25 +124,27 @@ def send_initial_ami_alert_vo_notification(alert):
                                 contacts['vobroker']['port'])
 
 
-def send_alert_report(alert, actions_taken):
-    assert isinstance(alert, swift.BatGrb)
+def send_alert_report(alert, actions_taken, contacts):
     notify_msg = generate_report_text(
                                 alert,
                                 active_sites,
                                 actions_taken)
-    subject = alert.id + ' / ' + alert.inferred_name
+    subject = alert.id
+    if alert.inferred_name is not None:
+              subject+= ' / ' + alert.inferred_name
     ps.comms.email.send_email(default_email_account,
-                        [p['email'] for p in notify_contacts],
+                        [p['email'] for p in contacts],
                         notification_email_prefix + subject,
                         notify_msg)
+
 
 def test_logic(v):
     now = datetime.datetime.now(pytz.utc)
     msg = "Test packet received at time %s\n" % now.strftime("%y-%m-%d %H:%M:%S")
     stream_id = v.attrib['ivorn'].partition('#')[-1]
-    response = voeparse.Voevent(stream='voevent.astro.soton/TESTRESPONSE',
+    response = voeventparse.Voevent(stream='voevent.astro.soton/TESTRESPONSE',
                                    stream_id=stream_id,
-                                   role=voeparse.definitions.roles.test)
+                                   role=voeventparse.definitions.roles.test)
     ps.comms.comet.send_voevent(response, contacts['vobroker']['host'],
                                 contacts['vobroker']['port'])
 
@@ -146,21 +154,22 @@ def test_logic(v):
                             body_text=msg)
     archive_voevent(v, rootdir=default_archive_root)
 
+
 def archive_voevent(v, rootdir):
     relpath, filename = v.attrib['ivorn'].split('//')[1].split('#')
     filename += ".xml"
     fullpath = os.path.sep.join((rootdir, relpath, filename))
     ps.utils.ensure_dir(fullpath)
     with open(fullpath, 'w') as f:
-        voeparse.dump(v, f)
+        voeventparse.dump(v, f)
 
 def generate_report_text(alert, sites, actions_taken,
                          report_timestamp=None):
     if report_timestamp is None:
         report_timestamp = datetime.datetime.now(pytz.utc)
-    site_reports = [(site, ps.ephem.visibility(alert.position, site, report_timestamp))
+    site_reports = [(site, get_ephem(alert.position, site, report_timestamp))
                             for site in sites]
-    notification_template = env.get_template('notify_example.txt')
+    notification_template = env.get_template('notify.txt')
     msg = notification_template.render(alert=alert,
                                 report_timestamp=report_timestamp,
                                 site_reports=site_reports,

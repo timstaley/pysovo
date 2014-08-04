@@ -1,4 +1,3 @@
-import os
 import json
 
 import logging
@@ -12,7 +11,8 @@ try:
         contacts = json.load(f)
     logger.debug('Contacts loaded from ' + contacts_file)
 except Exception as e:
-    logger.warn("Could not load contacts file; reason:\n" + str(e))
+    logger.warn("Could not load contacts file from"+ contacts_file
+                +", contacts set to empty dict")
     contacts = {}
 
 try:
@@ -20,5 +20,5 @@ try:
                                                     default_email_config_file)
     logger.debug("Default email account loaded from %s", default_email_config_file)
 except Exception as e:
-    logger.warn("Could not load default email account; reason:\n", +str(e))
+    logger.warn("Could not load default email account; reason:\n" + e.message)
     default_email_account = None

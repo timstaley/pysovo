@@ -2,8 +2,8 @@
 Convenience routines and data structures useful for dealing with Swift packets.
 """
 
-import voeparse
-from pysovo.utils import convert_voe_coords_to_fk5
+import voeventparse
+from pysovo.utils import convert_voe_coords_to_eqposn
 
 
 def swift_bool(bstring):
@@ -44,7 +44,7 @@ class filters:
              params["Solution_Status"]['Target_in_Flt_Catalog']['value'])
 
 
-class BatGrb:
+class BatGrb(object):
     def __init__(self, voevent):
         self.voevent = voevent
         if not filters.is_bat_grb_pkt(voevent):
@@ -56,10 +56,10 @@ class BatGrb:
         self.id = 'SWIFT_' + id_long_short[1]
         #Assigned name according to the 'why' section of voevent packet:
         self.inferred_name = self.voevent.Why.Inference.Name
-        self.isotime = voeparse.pull_isotime(self.voevent)
-        self.params = voeparse.pull_params(self.voevent)
-        self.position = convert_voe_coords_to_fk5(
-                                       voeparse.pull_astro_coords(self.voevent))
+        self.isotime = voeventparse.pull_isotime(self.voevent)
+        self.params = voeventparse.pull_params(self.voevent)
+        self.position = convert_voe_coords_to_eqposn(
+                                       voeventparse.pull_astro_coords(self.voevent))
 
     def reject(self):
         """

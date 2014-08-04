@@ -7,7 +7,7 @@ with open('requirements.txt') as f:
 
 setup(
     name="pysovo",
-    version="0.4.1",
+    version="0.4.3",
     packages=['pysovo', 'pysovo.comms', 'pysovo.triggers',
               'pysovo.tests', 'pysovo.tests.resources'],
     package_data={'pysovo':['tests/resources/*.xml', 'templates/*.txt']}, 

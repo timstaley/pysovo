@@ -1,9 +1,9 @@
 comet>=1.1.0
-voevent-parse==0.6.0
-ami-observatory==0.2.0
-Astropysics
+voevent-parse>=0.6.0
+#ami-observatory>=0.2.0
 scipy
 Jinja2
 python-dateutil
 pytz
-imbox
+pyephem
+#imbox

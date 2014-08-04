@@ -1,14 +1,14 @@
 from __future__ import absolute_import
 import logging
 import subprocess
-import voeparse
+import voeventparse
 import tempfile
 import textwrap
 logger = logging.getLogger(__name__)
 
 def send_voevent(voevent, host='localhost', port=8098):
     tf = tempfile.TemporaryFile()
-    voeparse.dump(voevent, tf)
+    voeventparse.dump(voevent, tf)
     tf.seek(0)
     # tf.close()
     try:
@@ -29,7 +29,7 @@ def dummy_send_to_comet_stub(voevent, host='localhost', port=8098):
     Copy of XML dumped to: {fname}
     *************
     """.format(host=host, port=port, fname=tf.name))
-    voeparse.dump(voevent, tf)
+    voeventparse.dump(voevent, tf)
     tf.close()
     # raise subprocess.CalledProcessError(1, 'dummyvosend')
 

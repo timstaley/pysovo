@@ -10,6 +10,8 @@ import smtplib
 import base64
 
 import pysovo as ps
+import logging
+logger = logging.getLogger(__name__)
 
 
 class EmailConfigKeys():
@@ -73,8 +75,8 @@ def load_account_settings_from_file(config_filename=ps.default_email_config_file
     try:
         with open(config_filename, 'r') as config_file:
             account = json.loads(config_file.read())
-    except Exception:
-        print "Error: Could not load email account from " + config_filename
+    except IOError:
+        logger.exception("Error: Could not load email account settings")
         raise
 
     return account

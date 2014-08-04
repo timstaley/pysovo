@@ -5,7 +5,7 @@ This provides a means of testing a live system in a safe and unobtrusive manner.
 """
 import datetime
 import logging
-import voeparse
+import voeventparse
 import pysovo
 from pysovo.local import contacts
 from pysovo.formatting import datetime_format_short
@@ -14,9 +14,10 @@ from pysovo.formatting import datetime_format_short
 
 def main():
     now = datetime.datetime.utcnow()
-    test_packet = voeparse.Voevent(stream='voevent.astro.soton/TEST',
+    test_packet = voeventparse.Voevent(stream='voevent.astro.soton/TEST',
                                    stream_id=now.strftime(datetime_format_short),
-                                   role=voeparse.definitions.roles.test)
+                                   role=voeventparse.definitions.roles.test)
+    voeventparse.set_who(test_packet, author_ivorn="voevent.astro.soton")
     print "Sending packet, ivorn: ", test_packet.attrib['ivorn']
     broker = contacts['vobroker']
     before = datetime.datetime.utcnow()

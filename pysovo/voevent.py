@@ -1,9 +1,8 @@
 from __future__ import absolute_import
 
-import voeparse as vp
+import voeventparse as vp
 import datetime
 from copy import copy
-import pysovo.utils
 
 
 def create_skeleton_4pisky_voevent(substream, stream_id,

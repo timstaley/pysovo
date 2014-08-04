@@ -1,11 +1,12 @@
 """
 Misc. convenience routines.
 """
-
+from __future__ import absolute_import
 import os
 from collections import Sequence
-from astropysics.coords.coordsys import FK5Coordinates
-import voeparse
+from ephem import Equatorial, J2000
+from pysovo.visibility import DEG_PER_RADIAN
+import voeventparse
 
 def listify(x):
     """
@@ -26,13 +27,12 @@ def ensure_dir(filename):
         os.makedirs(d)
 
 
-def convert_voe_coords_to_fk5(c):
-    """Unit-checked conversion from voeparse.Position2D -> astropysics FK5"""
-    if (c.system != voeparse.definitions.sky_coord_system.fk5
+def convert_voe_coords_to_eqposn(c):
+    """Unit-checked conversion from voeventparse.Position2D -> astropysics FK5"""
+    if (c.system != voeventparse.definitions.sky_coord_system.fk5
         or c.units != 'deg'):
         raise ValueError("Unrecognised Coords type: %s, %s" % (c.system, c.units))
-    return FK5Coordinates(ra=c.ra, dec=c.dec,
-                          raerror=c.err, decerror=c.err)
+    return Equatorial(c.ra/DEG_PER_RADIAN,c.dec/DEG_PER_RADIAN, epoch=J2000)
 
 def namedtuple_to_dict(nt):
     return {key:nt[i] for i, key in enumerate(nt._fields)}

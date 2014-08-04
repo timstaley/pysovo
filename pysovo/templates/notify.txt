@@ -1,0 +1,34 @@
+At {{ report_timestamp|datetime(dt_style) }} an alert of type:
+'{{ alert.description }}' 
+was received. Details are as follows:
+ID: {{ alert.id }}
+Inferred name: {{ alert.inferred_name }}
+Co-ords:
+    HMS-DMS: {{ alert.position.ra|string}}  {{alert.position.dec|string }}
+    Degrees: {{ alert.position.ra|rad_to_deg }}, {{ alert.position.dec|rad_to_deg}}
+Trigger time: {{ alert.isotime|datetime(dt_style) }}
+
+==============
+Actions taken:
+==============
+{% for action in actions_taken %}
+{{ action }}
+{% else %}
+No follow-ups requested.
+{% endfor %}
+
+{% if site_reports %}
+=============
+Site reports:
+=============
+{% endif %}
+{% for site, vis in site_reports %}
+    {% include 'visibility_report.txt' %}
+-------------------------------------------------
+{% endfor %}
+All times refer to UTC.
+
+
+
+Best regards,
+4 Pi Sky Bot.

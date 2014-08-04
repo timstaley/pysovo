@@ -4,7 +4,7 @@
 #(If not careful you might temporarily fix a broken import - which then remains broken)
 from pysovo.tests.resources import datapaths
 from pysovo.formatting import datetime_format_short
-import voeparse
+import voeventparse
 import alert_response as ar
 import datetime
 
@@ -15,9 +15,9 @@ ar.ps.comms.comet.send_voevent = ar.ps.comms.comet.dummy_send_to_comet_stub
 def main():
     ar.default_archive_root = "./"
     now = datetime.datetime.utcnow()
-    test_packet = voeparse.Voevent(stream='voevent.astro.soton/TEST',
+    test_packet = voeventparse.Voevent(stream='voevent.astro.soton/TEST',
                                    stream_id=now.strftime(datetime_format_short),
-                                   role=voeparse.definitions.roles.test)
+                                   role=voeventparse.definitions.roles.test)
     print "Packet loaded, ivorn", test_packet.attrib['ivorn']
     ar.voevent_logic(test_packet)
 

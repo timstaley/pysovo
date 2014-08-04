@@ -9,7 +9,7 @@ contacts_file = os.path.join(config_folder, 'contacts.json')
 default_email_config_file = os.path.join(config_folder, "email_acc")
 
 import pysovo.comms
-import pysovo.ephem
+import pysovo.visibility
 import pysovo.filters
 import pysovo.formatting
 import pysovo.triggers

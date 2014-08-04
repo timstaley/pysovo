@@ -1,6 +1,6 @@
 import unittest
 from pysovo.tests.resources import greenwich
-import pysovo.ephem as ephem
+from pysovo.visibility import get_ephem
 from pysovo.formatting import datetime_format_long, format_datetime
 
 import jinja2
@@ -24,11 +24,11 @@ class TestSiteVisReport(unittest.TestCase):
 #            print "Target: ", tgt
 #            print
             for site in self.sites:
-                vis = ephem.visibility(tgt, site, self.time)
+                vis = get_ephem(tgt, site, self.time)
                 site_report = self.template.render(site=site,
                                                    vis=vis,
                                                    dt_style=datetime_format_long)
-#                print site_report
+                print site_report
 #            print "----------------------------"
 
         #Export the function to the test cases:

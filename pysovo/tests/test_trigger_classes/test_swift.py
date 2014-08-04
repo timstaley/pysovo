@@ -1,7 +1,5 @@
 from unittest import TestCase
-from astropysics.coords.coordsys import FK5Coordinates
-import voeparse
-from pysovo.utils import convert_voe_coords_to_fk5
+import voeventparse
 from pysovo.triggers import swift
 from pysovo.tests.resources import datapaths
 
@@ -9,7 +7,7 @@ class TestSwiftGrbFilters(TestCase):
     def setUp(self):
         def reject_packet(pkt):
             with open(pkt) as f:
-                v = voeparse.load(f)
+                v = voeventparse.load(f)
             alert = swift.BatGrb(v)
             return alert.reject()
         self.reject = reject_packet
@@ -27,4 +25,4 @@ class TestSwiftGrbFilters(TestCase):
 class TestBatGrbClass(TestCase):
     def test_init(self):
         with open(datapaths.swift_bat_grb_pos_v2) as f:
-            trigger = swift.BatGrb(voeparse.load(f))
+            trigger = swift.BatGrb(voeventparse.load(f))
