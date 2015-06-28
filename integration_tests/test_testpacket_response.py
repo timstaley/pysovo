@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 #Minimal imports here - ensures proper testing of alert_response.
 #(If not careful you might temporarily fix a broken import - which then remains broken)
-from pysovo.tests.resources import datapaths
 from pysovo.formatting import datetime_format_short
 import voeventparse
 import alert_response as ar

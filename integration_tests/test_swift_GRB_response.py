@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 from __future__ import absolute_import
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 #Minimal imports here - ensures proper testing of alert_response.
 #(If not careful you might temporarily fix a broken import - which then remains broken)
 from pysovo.tests.resources import datapaths
 import alert_response as ar
-import voeventparse
+
 ##We bind the email sender to a dummy function:
 ar.ps.comms.email.send_email = ar.ps.comms.email.dummy_email_send_function
 ar.ps.comms.comet.send_voevent = ar.ps.comms.comet.dummy_send_to_comet_stub
 ar.notification_email_prefix = "[TEST] " + ar.notification_email_prefix
 ar.grb_contacts = [ ar.contacts['test']  ]  # Only notify test contacts
-ar.contacts['ami']['email'] = 'blocked!' + ar.contacts['ami']['email']  # Do NOT email AMI
+ar.amiobs.email_address = 'blocked!' + ar.amiobs.email_address  # Do NOT email AMI
 ar.default_archive_root = "./"
 
 def main():

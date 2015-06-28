@@ -99,11 +99,11 @@ def trigger_ami_swift_grb_alert(alert):
                    duration=duration,
                   timing='ASAP',
                   action='QUEUE',
-                  requester=contacts['ami']['requester'],
+                  requester=amiobs.default_requester,
                   comment=comment)
 
     ps.comms.email.send_email(account=default_email_account,
-                            recipient_addresses=contacts['ami']['email'],
+                            recipient_addresses=amiobs.email_address,
                             subject=amiobs.request_email_subject,
                             body_text=ami_request)
 
