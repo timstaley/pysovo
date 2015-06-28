@@ -7,7 +7,7 @@ import subprocess
 import copy
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-from pysovo.local import contacts, default_email_account
+from pysovo.local import default_email_account, contacts
 from pysovo.visibility import get_ephem
 from pysovo.triggers import swift
 import pysovo as ps
@@ -16,14 +16,7 @@ import amiobs
 from jinja2 import Environment, PackageLoader
 
 #-------------------------------------------------------------------------------
-grb_contacts = [contacts['tim'],
-                   contacts['rob'],
-                   contacts['kunal'],
-                   contacts['gemma'], 
-                   contacts['vik'],
-                   contacts['liam'],
-                   contacts['stuart']
-                   ]
+grb_contacts = contacts.grb_contacts
 
 
 notification_email_prefix = "[4 Pi Sky] "
@@ -120,8 +113,8 @@ def send_initial_ami_alert_vo_notification(alert):
     v = ps.voevent.create_ami_followup_notification(alert,
                                              stream_id=stream_id,
                                              request_status=request_status)
-    ps.comms.comet.send_voevent(v, contacts['vobroker']['host'],
-                                contacts['vobroker']['port'])
+    ps.comms.comet.send_voevent(v, contacts.local_vobroker.ipaddress,
+                                contacts.local_vobroker.port)
 
 
 def send_alert_report(alert, actions_taken, contacts):
@@ -133,7 +126,7 @@ def send_alert_report(alert, actions_taken, contacts):
     if alert.inferred_name is not None:
               subject+= ' / ' + alert.inferred_name
     ps.comms.email.send_email(default_email_account,
-                        [p['email'] for p in contacts],
+                        [p.email for p in contacts],
                         notification_email_prefix + subject,
                         notify_msg)
 
@@ -145,13 +138,14 @@ def test_logic(v):
     response = voeventparse.Voevent(stream='voevent.astro.soton/TESTRESPONSE',
                                    stream_id=stream_id,
                                    role=voeventparse.definitions.roles.test)
-    ps.comms.comet.send_voevent(response, contacts['vobroker']['host'],
-                                contacts['vobroker']['port'])
+    ps.comms.comet.send_voevent(response, contacts.local_vobroker.ipaddress,
+                                contacts.local_vobroker.port)
 
-    ps.comms.email.send_email(account=default_email_account,
-                            recipient_addresses=contacts['test']['email'],
-                            subject='[VO-TEST] Test packet received',
-                            body_text=msg)
+    ps.comms.email.send_email(
+        account=default_email_account,
+        recipient_addresses=[c.email for c in contacts.test_contacts],
+        subject='[VO-TEST] Test packet received',
+        body_text=msg)
     archive_voevent(v, rootdir=default_archive_root)
 
 

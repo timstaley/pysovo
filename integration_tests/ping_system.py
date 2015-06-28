@@ -19,9 +19,9 @@ def main():
                                    role=voeventparse.definitions.roles.test)
     voeventparse.set_who(test_packet, author_ivorn="voevent.astro.soton")
     print "Sending packet, ivorn: ", test_packet.attrib['ivorn']
-    broker = contacts['vobroker']
+    broker = contacts.local_vobroker
     before = datetime.datetime.utcnow()
-    pysovo.comms.comet.send_voevent(test_packet, broker['host'], broker['port'])
+    pysovo.comms.comet.send_voevent(test_packet, broker.ipaddress, broker.port)
     after = datetime.datetime.utcnow()
     print "Done. Sending took", (after - before).total_seconds(), "seconds."
 
