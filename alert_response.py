@@ -18,6 +18,7 @@ from jinja2 import Environment, PackageLoader
 #-------------------------------------------------------------------------------
 grb_contacts = contacts.grb_contacts
 
+amiobs.email_address = contacts.test_contacts[0].email
 
 notification_email_prefix = "[4 Pi Sky] "
 
@@ -91,7 +92,7 @@ def trigger_ami_swift_grb_alert(alert):
                    target_name=target_name,
                    duration=duration,
                   timing='ASAP',
-                  action='QUEUE',
+                  action='CHECK',
                   requester=amiobs.default_requester,
                   comment=comment)
 
