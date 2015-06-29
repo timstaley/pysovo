@@ -32,3 +32,4 @@ All times refer to UTC.
 
 Best regards,
 4 Pi Sky Bot.
+(Staging branch, from {{hostname}})

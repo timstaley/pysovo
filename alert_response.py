@@ -4,7 +4,7 @@ import datetime, pytz
 import voeventparse
 import logging
 import subprocess
-import copy
+import socket
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 from pysovo.local import contacts
@@ -160,12 +160,15 @@ def generate_report_text(alert, sites, actions_taken,
         report_timestamp = datetime.datetime.now(pytz.utc)
     site_reports = [(site, get_ephem(alert.position, site, report_timestamp))
                             for site in sites]
+    hostname = socket.gethostname()
     notification_template = env.get_template('notify.txt')
     msg = notification_template.render(alert=alert,
                                 report_timestamp=report_timestamp,
                                 site_reports=site_reports,
                                 actions_taken=actions_taken,
-                                dt_style=ps.formatting.datetime_format_long)
+                                dt_style=ps.formatting.datetime_format_long,
+                                hostname=hostname
+                                )
     return msg
 
 if __name__ == '__main__':
