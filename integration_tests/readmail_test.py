@@ -28,11 +28,10 @@ def main():
 #         sys.exit(1)
 
     print "Sending new test-mail..."
-    email.send_email(account,
-                     recipient_addresses=account[acc_keys.username],
+    email.send_email(recipient_addresses=account[acc_keys.username],
                      subject="[TEST] PYSOVO INTEGRATION TEST",
-                     body_text="Ima firin mah lazers!",
-                     verbose=True)
+                     body_text="Ima firin mah lazers!"
+                     )
 
     imbox = make_imbox(account)
     msgs = list(imbox.messages(sent_from=account[acc_keys.username],

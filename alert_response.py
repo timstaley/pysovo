@@ -7,7 +7,7 @@ import subprocess
 import copy
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-from pysovo.local import default_email_account, contacts
+from pysovo.local import contacts
 from pysovo.visibility import get_ephem
 from pysovo.triggers import swift
 import pysovo as ps
@@ -95,10 +95,9 @@ def trigger_ami_swift_grb_alert(alert):
                   requester=amiobs.default_requester,
                   comment=comment)
 
-    ps.comms.email.send_email(account=default_email_account,
-                            recipient_addresses=amiobs.email_address,
-                            subject=amiobs.request_email_subject,
-                            body_text=ami_request)
+    ps.comms.email.send_email(recipient_addresses=amiobs.email_address,
+                              subject=amiobs.request_email_subject,
+                              body_text=ami_request)
 
 
 
@@ -125,10 +124,9 @@ def send_alert_report(alert, actions_taken, contacts):
     subject = alert.id
     if alert.inferred_name is not None:
               subject+= ' / ' + alert.inferred_name
-    ps.comms.email.send_email(default_email_account,
-                        [p.email for p in contacts],
-                        notification_email_prefix + subject,
-                        notify_msg)
+    ps.comms.email.send_email([p.email for p in contacts],
+                              notification_email_prefix + subject,
+                              notify_msg)
 
 
 def test_logic(v):
@@ -142,7 +140,6 @@ def test_logic(v):
                                 contacts.local_vobroker.port)
 
     ps.comms.email.send_email(
-        account=default_email_account,
         recipient_addresses=[c.email for c in contacts.test_contacts],
         subject='[VO-TEST] Test packet received',
         body_text=msg)
