@@ -11,6 +11,7 @@ Trigger time: {{ alert.isotime|datetime(dt_style) }}
 ==============
 Actions taken:
 ==============
+(The following would have happened if deployed:)
 {% for action in actions_taken %}
 {{ action }}
 {% else %}
