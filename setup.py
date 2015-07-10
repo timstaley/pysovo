@@ -12,7 +12,10 @@ setup(
     cmdclass=versioneer.get_cmdclass(),
     packages=['pysovo', 'pysovo.comms', 'pysovo.triggers',
               'pysovo.tests', 'pysovo.tests.resources'],
-    package_data={'pysovo':['tests/resources/*.xml', 'templates/*.txt']}, 
+    package_data={'pysovo':[
+        'tests/resources/*.xml',
+       'templates/*.j2', 'templates/includes/*.j2'
+    ]},
     description="Utility scripts for reacting to received VOEvent packets",
     author="Tim Staley",
     author_email="timstaley337@gmail.com",

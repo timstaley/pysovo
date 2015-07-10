@@ -11,14 +11,13 @@ env = Environment(loader=PackageLoader('pysovo', 'templates'),
 env.filters['datetime'] = format_datetime
 
 #--------------------------------------------------------------
-basic_site_vis_report = env.get_template('visibility_report.txt')
 
 class TestSiteVisReport(unittest.TestCase):
     def setUp(self):
         self.time = greenwich.vernal_equinox_2012
         self.sites = [greenwich.greenwich_site,
                       greenwich.anti_site]
-        self.template = env.get_template('visibility_report.txt')
+        self.template = env.get_template('includes/visibility_report.j2')
         def test_tgt(tgt):
 #            print "----------------------------"
             print "Target: ", tgt.ra, tgt.dec

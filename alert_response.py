@@ -162,7 +162,7 @@ def generate_report_text(alert, sites, actions_taken,
     site_reports = [(site, get_ephem(alert.position, site, report_timestamp))
                             for site in sites]
     hostname = socket.gethostname()
-    notification_template = env.get_template('notify.txt')
+    notification_template = env.get_template('notify.j2')
     msg = notification_template.render(alert=alert,
                                 report_timestamp=report_timestamp,
                                 site_reports=site_reports,

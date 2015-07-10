@@ -24,15 +24,9 @@ Site reports:
 =============
 {% endif %}
 {% for site, vis in site_reports %}
-    {% include 'visibility_report.txt' %}
+    {% include 'includes/visibility_report.j2' %}
 -------------------------------------------------
 {% endfor %}
 All times refer to UTC.
 
-
-
-Best regards,
-4 Pi Sky Bot.
-(Staging branch, from {{hostname}}.
-Version tag: {{versions.version}}
-Git SHA: {{versions['full-revisionid'][:8]}})
+{% include 'includes/signoff.j2' %}
