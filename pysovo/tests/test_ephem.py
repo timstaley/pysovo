@@ -26,7 +26,7 @@ class TestPyEphemSiteVisibilityCalcs(unittest.TestCase):
         self.assertEqual(e[tkeys.visible_now], True)
 
         target_polar_offset = (90 - target.dec*DEG_PER_RADIAN)
-        self.assertAlmostEqual(e[tkeys.trans_pos][0],
+        self.assertAlmostEqual(e[tkeys.next_transit_pos][0],
                                self.site.lat*DEG_PER_RADIAN + target_polar_offset,
                                places=1)
 
@@ -50,9 +50,9 @@ class TestPyEphemSiteVisibilityCalcs(unittest.TestCase):
 
         print
         print now[tkeys.current_pos]
-        print now[tkeys.trans_pos]
+        print now[tkeys.next_transit_pos]
         print later[tkeys.current_pos]
-        print later[tkeys.trans_pos]
+        print later[tkeys.next_transit_pos]
 
 
 

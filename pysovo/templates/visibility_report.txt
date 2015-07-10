@@ -1,14 +1,15 @@
 {{site.name}} observatory:
 LST: {{vis.site_lst}} 
 Target is {{vis.type}} visible.
-{% if vis.type == "never" %}
+    {% if vis.type == "never" %}
 (Always below horizon.)
-{% else %}
+    {% else %}
+        {% if vis.type == "sometimes" %}
 Currently visible? {{vis.visible_now }}
-Next transit time:	{{vis.transit_time|datetime(dt_style)}}
-    {% if vis.type == "sometimes" %}
-Rise time:		{{vis.rise_time|datetime(dt_style)}}
-Set time:		{{ vis.set_time|datetime(dt_style)}}
-    {% endif %}
-Transit alt-az position: {{vis.transit_position.0|round(3),vis.transit_position.1|round(3)}}
+        {% endif %}
+Timeline:
+    {% for dtime, event_name in vis.timeline.iteritems() %}
+        {{ dtime|datetime(dt_style) }}: {{ event_name }}
+    {% endfor %}
+Alt-az position at next transit: {{vis.next_transit_position.0|round(3),vis.next_transit_position.1|round(3)}}
 {% endif %}

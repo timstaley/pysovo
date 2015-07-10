@@ -19,11 +19,18 @@ def main():
     def test_packet(path):
         with open(path) as f:
             ar.voevent_logic(ar.voeventparse.load(f))
+    print "Sometimes visible source:"
     test_packet(datapaths.swift_bat_grb_pos_v2)
+    ##Now a circumpolar source:
+    print "Always visible source:"
+    test_packet(datapaths.swift_bat_grb_circumpolar)
     ##Now test one with null follow-up:
+    print "Never visible source:"
     test_packet(datapaths.swift_bat_grb_low_dec)
     ##Now test one with bad star tracking:
+    print "Bad source:"
     test_packet(datapaths.swift_bat_grb_lost_lock)
+    print "Known source:"
     test_packet(datapaths.swift_bat_known_source)
 
 if __name__ == "__main__":

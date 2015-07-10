@@ -5,7 +5,7 @@ from __future__ import absolute_import
 import ephem
 import math
 import pytz
-
+from collections import OrderedDict
 DEG_PER_RADIAN = 180 / math.pi
 
 
@@ -16,10 +16,13 @@ class TargetStatusKeys():
     type = 'type'
     visible_now = 'visible_now'
     current_pos = 'current_position'
-    trans_time = 'transit_time'
-    trans_pos = 'transit_position'
+    prev_transit_time = 'prev_transit_time'
+    prev_transit_pos = 'prev_transit_position'
+    next_transit_time = 'next_transit_time'
+    next_transit_pos = 'next_transit_position'
     rise_time = 'rise_time'
     set_time = 'set_time'
+    timeline = 'timeline'
 
 
 def get_ephem(eq_posn, observer, current_time):
@@ -48,29 +51,41 @@ def get_ephem(eq_posn, observer, current_time):
         result[keys.type] = 'never'
         return result
 
-    result[keys.trans_time] = pytz.utc.localize(
+    result[keys.next_transit_time] = pytz.utc.localize(
         observer.next_transit(fixedbody).datetime())
+    result[keys.prev_transit_time] = pytz.utc.localize(
+        observer.previous_transit(fixedbody).datetime())
 
     if fixedbody.circumpolar:
         # Circumpolar
         result[keys.type] = 'always'
+        events = ['previous_transit','next_transit' ]
     else:
         # Regular rise and set
         result[keys.type] = 'sometimes'
-        # Returns timezone unaware ('naive') datetimes
+        events = [
+            'previous_rising', 'previous_transit', 'previous_setting',
+            'next_rising', 'next_transit', 'next_setting',
+        ]
+    # Returns timezone unaware ('naive') datetimes
+    timeline = {}
+    for event_name in events:
+        observer_func =  getattr(observer, event_name)
+        event_date = pytz.utc.localize(observer_func(fixedbody).datetime())
+        timeline[event_date] = event_name.replace('_',' ').capitalize()
+    timeline[current_time] = '(Trigger received)'
 
-        result[keys.rise_time] = pytz.utc.localize(
-            observer.next_rising(fixedbody).datetime())
-        result[keys.set_time] = pytz.utc.localize(
-            observer.next_setting(fixedbody).datetime())
+    result[keys.timeline]=OrderedDict()
+    for dtime in sorted(timeline):
+        result[keys.timeline][dtime] = timeline[dtime]
 
     transit_observer = ephem.Observer()
     transit_observer.lon = observer.lon
     transit_observer.lat = observer.lat
     transit_observer.horizon = observer.horizon
-    transit_observer.date = result[keys.trans_time]
+    transit_observer.date = result[keys.next_transit_time]
     fixedbody.compute(transit_observer)
-    result[keys.trans_pos] = (fixedbody.alt * DEG_PER_RADIAN,
+    result[keys.next_transit_pos] = (fixedbody.alt * DEG_PER_RADIAN,
                               fixedbody.az * DEG_PER_RADIAN)
 
     return result

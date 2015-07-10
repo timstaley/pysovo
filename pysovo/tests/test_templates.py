@@ -21,7 +21,7 @@ class TestSiteVisReport(unittest.TestCase):
         self.template = env.get_template('visibility_report.txt')
         def test_tgt(tgt):
 #            print "----------------------------"
-#            print "Target: ", tgt
+            print "Target: ", tgt.ra, tgt.dec
 #            print
             for site in self.sites:
                 vis = get_ephem(tgt, site, self.time)
