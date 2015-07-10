@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
 from setuptools import setup
+import versioneer
 
 with open('requirements.txt') as f:
     required = f.read().splitlines()
 
 setup(
     name="pysovo",
-    version="0.4.5",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     packages=['pysovo', 'pysovo.comms', 'pysovo.triggers',
               'pysovo.tests', 'pysovo.tests.resources'],
     package_data={'pysovo':['tests/resources/*.xml', 'templates/*.txt']}, 
