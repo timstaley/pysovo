@@ -4,7 +4,6 @@ import datetime, pytz
 import voeventparse
 import logging
 import subprocess
-import socket
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 from pysovo.local import contacts
@@ -132,17 +131,20 @@ def send_alert_report(alert, actions_taken, contacts):
 
 def test_logic(v):
     now = datetime.datetime.now(pytz.utc)
-    msg = "Test packet received at time %s\n" % now.strftime("%y-%m-%d %H:%M:%S")
+
     stream_id = v.attrib['ivorn'].partition('#')[-1]
     response = voeventparse.Voevent(stream='voevent.astro.soton/TESTRESPONSE',
                                    stream_id=stream_id,
                                    role=voeventparse.definitions.roles.test)
     ps.comms.comet.send_voevent(response, contacts.local_vobroker.ipaddress,
                                 contacts.local_vobroker.port)
-
+    testresponse_template = env.get_template('test_response.j2')
+    msg_context = dict(now=now)
+    msg_context.update(ps.base_context())
+    msg = testresponse_template.render(msg_context)
     ps.comms.email.send_email(
         recipient_addresses=[c.email for c in contacts.test_contacts],
-        subject='[VO-TEST] Test packet received',
+        subject=notification_email_prefix + '[TEST] Test packet received',
         body_text=msg)
     archive_voevent(v, rootdir=default_archive_root)
 
@@ -161,16 +163,13 @@ def generate_report_text(alert, sites, actions_taken,
         report_timestamp = datetime.datetime.now(pytz.utc)
     site_reports = [(site, get_ephem(alert.position, site, report_timestamp))
                             for site in sites]
-    hostname = socket.gethostname()
     notification_template = env.get_template('notify.j2')
-    msg = notification_template.render(alert=alert,
-                                report_timestamp=report_timestamp,
-                                site_reports=site_reports,
-                                actions_taken=actions_taken,
-                                dt_style=ps.formatting.datetime_format_long,
-                                hostname=hostname,
-                                versions=ps.__versiondict__
-                                )
+    msg_context=dict(alert=alert,
+                report_timestamp=report_timestamp,
+                site_reports=site_reports,
+                actions_taken=actions_taken,)
+    msg_context.update(ps.base_context())
+    msg = notification_template.render(msg_context)
     return msg
 
 if __name__ == '__main__':

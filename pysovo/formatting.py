@@ -1,4 +1,4 @@
-"""Various code snippets used for formatting messages"""
+"""Various code snippets used for formatting and generating messages"""
 from __future__ import absolute_import
 from pysovo.visibility import DEG_PER_RADIAN
 #----------------------------------------------------
@@ -15,3 +15,4 @@ def format_datetime(dt, format=None):
 
 def rad_to_deg(rad):
     return rad*DEG_PER_RADIAN
+
