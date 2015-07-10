@@ -168,7 +168,8 @@ def generate_report_text(alert, sites, actions_taken,
                                 site_reports=site_reports,
                                 actions_taken=actions_taken,
                                 dt_style=ps.formatting.datetime_format_long,
-                                hostname=hostname
+                                hostname=hostname,
+                                versions=ps.__versiondict__
                                 )
     return msg
 

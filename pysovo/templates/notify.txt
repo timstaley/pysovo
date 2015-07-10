@@ -33,4 +33,6 @@ All times refer to UTC.
 
 Best regards,
 4 Pi Sky Bot.
-(Staging branch, from {{hostname}})
+(Staging branch, from {{hostname}}.
+Version tag: {{versions.version}}
+Git SHA: {{versions['full-revisionid'][:8]}})
