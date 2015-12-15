@@ -37,7 +37,6 @@ def main():
     msgs = list(imbox.messages(sent_from=account[acc_keys.username],
                                 unread=True))
     print "Got ", len(msgs), "new test message uids"
-#                                , sent_from='voevent.soton@gmail.com')
     match_uids = imbox.query_uids(sent_from=account[acc_keys.username],
                                 unread=True)
     print "Will they remain marked? Got new list of length:", len(match_uids)

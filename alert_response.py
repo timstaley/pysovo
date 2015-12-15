@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 from pysovo.local import contacts
 from pysovo.visibility import get_ephem
 from pysovo.triggers import swift
+from pysovo.triggers import is_test_trigger
+from pysovo.voevent import ivorn_base
 import pysovo as ps
 import amiobs
 
@@ -43,7 +45,7 @@ def voevent_logic(v):
     #SWIFT BAT GRB alert:
     if swift.filters.is_bat_grb_pkt(v):
         swift_bat_grb_logic(v)
-    if v.attrib['ivorn'].find("ivo://voevent.astro.soton/TEST#") == 0:
+    if is_test_trigger(v):
         test_logic(v)
     archive_voevent(v, rootdir=default_archive_root)
 
@@ -131,11 +133,11 @@ def send_alert_report(alert, actions_taken, contacts):
 
 def test_logic(v):
     now = datetime.datetime.now(pytz.utc)
-
     stream_id = v.attrib['ivorn'].partition('#')[-1]
-    response = voeventparse.Voevent(stream='voevent.astro.soton/TESTRESPONSE',
-                                   stream_id=stream_id,
-                                   role=voeventparse.definitions.roles.test)
+    response = ps.voevent.create_4pisky_test_response_voevent(
+        stream_id=stream_id,
+        date=now)
+
     ps.comms.comet.send_voevent(response, contacts.local_vobroker.ipaddress,
                                 contacts.local_vobroker.port)
     testresponse_template = env.get_template('test_response.j2')
