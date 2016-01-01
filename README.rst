@@ -2,6 +2,16 @@
 pysovo
 ======
 
+
+**THIS PROJECT HAS MOVED**
+
+The current version of this codebase can be found at 
+https://github.com/4pisky/fourpisky-core. 
+This repository is preserved only to avoid breaking links in the literature.
+
+-------------------------------
+
+
 Basic tools to do things with VOEvents. 
 (e.g. pick out certain events, then send email alerts or new VOEvents, etc.)
 
